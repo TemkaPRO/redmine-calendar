@@ -1,0 +1,3136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Redmine календарь</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#1f6feb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Redmine">
+<style>
+:root {
+  --bg: #f4f5f9;
+  --side: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f7f8fb;
+  --surface-3: #eef0f5;
+  --border: #e5e7ee;
+  --border-2: #d7dae3;
+  --text: #151826;
+  --text-2: #535a6d;
+  --text-3: #6b7285;
+  --accent: #1f6feb;
+  --accent-soft: #e6f0ff;
+  --accent-text: #0b57d0;
+  --red: #e5484d;
+  --red-soft: #fff0f0;
+  --red-text: #c62a2f;
+  --amber: #f5a524;
+  --amber-soft: #fff6e5;
+  --amber-text: #9a5b00;
+  --green: #30a46c;
+  --green-soft: #e9f8ef;
+  --green-text: #18794e;
+  --weekend: #fafafd;
+  --p0: #b4b9c6;
+  --p1: #8fb3f2;
+  --p2: #f5a524;
+  --p3: #f76b15;
+  --p4: #e5484d;
+  --hero-1: #1f6feb;
+  --hero-2: #2f80ff;
+  --shadow-sm: 0 1px 2px rgba(20, 24, 40, .05);
+  --shadow: 0 1px 3px rgba(20, 24, 40, .06), 0 6px 16px rgba(20, 24, 40, .06);
+  --shadow-lg: 0 24px 60px -12px rgba(20, 24, 40, .35);
+  --scrim: rgba(12, 14, 24, .38);
+  --toast-bg: #1b1e2b;
+  --toast-text: #f2f3f7;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1016;
+    --side: #13151d;
+    --surface: #171a23;
+    --surface-2: #1c1f2a;
+    --surface-3: #252936;
+    --border: #252937;
+    --border-2: #313646;
+    --text: #e9ebf1;
+    --text-2: #a3a9b9;
+    --text-3: #8a91a4;
+    --accent: #58a6ff;
+    --accent-soft: rgba(56, 139, 253, .16);
+    --accent-text: #79c0ff;
+    --red: #f2555a;
+    --red-soft: rgba(242, 85, 90, .13);
+    --red-text: #ff8a8e;
+    --amber: #f5b041;
+    --amber-soft: rgba(245, 176, 65, .13);
+    --amber-text: #ffca6b;
+    --green: #3dd68c;
+    --green-soft: rgba(61, 214, 140, .13);
+    --green-text: #5fe3a6;
+    --weekend: #191c26;
+    --p0: #5b6172;
+    --p1: #6fa3e8;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 6px 16px rgba(0, 0, 0, .25);
+    --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, .7);
+    --scrim: rgba(0, 0, 0, .55);
+    --toast-bg: #2a2e3c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1016;
+  --side: #13151d;
+  --surface: #171a23;
+  --surface-2: #1c1f2a;
+  --surface-3: #252936;
+  --border: #252937;
+  --border-2: #313646;
+  --text: #e9ebf1;
+  --text-2: #a3a9b9;
+  --text-3: #8a91a4;
+  --accent: #58a6ff;
+  --accent-soft: rgba(56, 139, 253, .16);
+  --accent-text: #79c0ff;
+  --red: #f2555a;
+  --red-soft: rgba(242, 85, 90, .13);
+  --red-text: #ff8a8e;
+  --amber: #f5b041;
+  --amber-soft: rgba(245, 176, 65, .13);
+  --amber-text: #ffca6b;
+  --green: #3dd68c;
+  --green-soft: rgba(61, 214, 140, .13);
+  --green-text: #5fe3a6;
+  --weekend: #191c26;
+  --p0: #5b6172;
+  --p1: #6fa3e8;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 6px 16px rgba(0, 0, 0, .25);
+  --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, .7);
+  --scrim: rgba(0, 0, 0, .55);
+  --toast-bg: #2a2e3c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+kbd {
+  font: 11px/1 "Cascadia Mono", Consolas, monospace;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--border-2);
+  color: var(--text-3);
+  background: var(--surface);
+}
+.ic { flex: none; display: block; }
+.mono { font-family: "Cascadia Mono", Consolas, monospace; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--text-3); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- layout ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); height: 100vh; }
+.side {
+  background: var(--side);
+  border-right: 1px solid var(--border);
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+}
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+/* ---------- sidebar ---------- */
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 4px; }
+.logo {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: linear-gradient(135deg, var(--hero-1), var(--hero-2));
+  display: grid; place-items: center; color: #fff;
+  box-shadow: 0 4px 12px rgba(31, 111, 235, .35);
+}
+.brand b { display: block; font-size: 15px; letter-spacing: -.01em; }
+.brand span { display: block; font-size: 12px; color: var(--text-3); margin-top: -1px; }
+
+.hero {
+  border-radius: 16px;
+  padding: 16px 18px;
+  color: #fff;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(255, 255, 255, .22), transparent 55%),
+    linear-gradient(135deg, var(--hero-1), var(--hero-2));
+  box-shadow: 0 10px 24px -10px rgba(31, 111, 235, .6);
+  display: flex; align-items: center; gap: 14px;
+}
+.hero-num { font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -.03em; }
+.hero-wd { font-weight: 600; font-size: 15px; }
+.hero-m { opacity: .82; font-size: 13px; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 10px 12px 9px;
+  transition: border-color .15s, transform .15s, background .15s;
+}
+.stat:hover { border-color: var(--border-2); transform: translateY(-1px); }
+.stat-l { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; }
+.stat-l i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+.stat-v { font-size: 24px; font-weight: 650; letter-spacing: -.02em; line-height: 1.25; }
+.stat.red { background: var(--red-soft); border-color: transparent; }
+.stat.red .stat-v { color: var(--red-text); }
+.stat.red i { background: var(--red); }
+.stat.accent i { background: var(--accent); }
+.stat.amber i { background: var(--amber); }
+.stat.green i { background: var(--green); }
+
+.loadbox { padding: 0 4px; }
+.load-row { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-2); margin-bottom: 7px; }
+.load-row b { color: var(--text); font-weight: 600; }
+.bar { height: 7px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--hero-1), var(--hero-2)); transition: width .4s; }
+.bar.over > span { background: linear-gradient(90deg, var(--amber), var(--red)); }
+.load-note { font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.load-note.over { color: var(--red-text); }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav-h { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 0 10px 6px; }
+.nav button {
+  display: flex; align-items: center; gap: 10px;
+  height: 38px; padding: 0 10px;
+  border: 0; border-radius: 10px;
+  background: transparent; color: var(--text-2);
+  font-weight: 500; text-align: left;
+}
+.nav button:hover { background: var(--surface-2); color: var(--text); }
+.nav button.on { background: var(--accent-soft); color: var(--accent-text); }
+.nav button kbd { margin-left: auto; }
+.nav button.on kbd { border-color: transparent; background: transparent; color: var(--accent-text); }
+
+.foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 4px 0; border-top: 1px solid var(--border); }
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 650; color: #fff;
+  background: linear-gradient(135deg, #22c1a4, #3b82f6);
+}
+.foot-who { min-width: 0; flex: 1; }
+.foot-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.foot-sub { font-size: 12px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.foot-sub.err { color: var(--red-text); }
+
+/* ---------- top bar ---------- */
+.top { display: flex; align-items: flex-end; gap: 16px; padding: 22px 28px 14px; }
+.top h1 { margin: 0; font-size: 23px; font-weight: 680; letter-spacing: -.02em; }
+.top p { margin: 2px 0 0; color: var(--text-2); }
+.tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.search {
+  display: flex; align-items: center; gap: 8px;
+  height: 38px; width: 280px; padding: 0 8px 0 12px;
+  border: 1px solid var(--border); border-radius: 11px;
+  background: var(--surface); color: var(--text-3);
+  transition: border-color .15s, box-shadow .15s;
+}
+.search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search input { border: 0; outline: 0; background: transparent; flex: 1; min-width: 0; color: var(--text); }
+.search input::placeholder { color: var(--text-3); }
+.select {
+  height: 38px; max-width: 200px; padding: 0 30px 0 12px;
+  border: 1px solid var(--border); border-radius: 11px;
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a90a2' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;
+  appearance: none; outline: 0;
+}
+.select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.select option { background: var(--surface); color: var(--text); }
+
+.btn {
+  height: 38px; padding: 0 14px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid var(--border); border-radius: 11px;
+  background: var(--surface); color: var(--text);
+  font-weight: 550; white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--border-2); }
+.btn:active { transform: translateY(1px); }
+.btn.icon { width: 38px; padding: 0; }
+.btn.sm { height: 32px; padding: 0 11px; border-radius: 9px; font-size: 13px; }
+.btn.sm.icon { width: 32px; padding: 0; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.07); }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn.ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn[disabled] { opacity: .55; pointer-events: none; }
+.spin .ic { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.banner {
+  margin: 0 28px 12px; padding: 10px 14px;
+  border-radius: 12px; background: var(--red-soft); color: var(--red-text);
+  display: flex; align-items: center; gap: 10px; font-weight: 500;
+}
+.banner:empty { display: none; }
+.banner .btn { margin-left: auto; height: 30px; }
+
+/* ---------- views ---------- */
+.view { flex: 1; min-height: 0; overflow: auto; padding: 2px 28px 28px; }
+.view.fill { display: flex; flex-direction: column; overflow: hidden; }
+.vbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex: none; }
+.vbar h2 { margin: 0 6px; font-size: 17px; font-weight: 650; min-width: 170px; }
+.vbar-note { margin-left: auto; color: var(--text-3); font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.seg button { width: 34px; height: 32px; border: 0; background: transparent; display: grid; place-items: center; color: var(--text-2); }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button:hover { background: var(--surface-2); color: var(--text); }
+
+/* plan */
+.plan { max-width: 1200px; }
+.grp { margin-bottom: 18px; scroll-margin-top: 8px; }
+.grp-head {
+  position: sticky; top: 0; z-index: 2;
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 10px 4px 9px; border: 0; background: var(--bg); text-align: left;
+}
+.grp-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-3); flex: none; }
+.grp-title { font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; }
+.grp-note { color: var(--text-3); font-size: 13px; }
+.grp-count {
+  font-size: 12px; font-weight: 600; min-width: 22px; height: 20px; padding: 0 7px;
+  display: inline-grid; place-items: center; border-radius: 99px;
+  background: var(--surface-3); color: var(--text-2);
+}
+.grp-hours { margin-left: auto; color: var(--text-3); font-size: 13px; display: flex; align-items: center; gap: 5px; }
+.grp-chev { color: var(--text-3); transition: transform .2s; }
+.grp.closed .grp-chev { transform: rotate(-90deg); }
+.grp.closed .grp-body { display: none; }
+.grp.tone-red .grp-dot { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+.grp.tone-red .grp-title { color: var(--red-text); }
+.grp.tone-red .grp-count { background: var(--red-soft); color: var(--red-text); }
+.grp.tone-accent .grp-dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.grp.tone-accent .grp-count { background: var(--accent-soft); color: var(--accent-text); }
+.grp.tone-amber .grp-dot { background: var(--amber); }
+.grp-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 4px 84px minmax(0, 1fr) auto 172px 52px;
+  align-items: center; gap: 14px;
+  padding: 11px 16px 11px 0;
+  cursor: pointer; outline: 0;
+  transition: background .12s;
+}
+.row + .row { border-top: 1px solid var(--border); }
+.row:hover, .row:focus-visible { background: var(--surface-2); }
+.row .pbar { width: 4px; height: 30px; border-radius: 0 4px 4px 0; background: var(--pc); }
+.rid { font: 12.5px "Cascadia Mono", Consolas, monospace; color: var(--text-3); }
+.rsubj { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rmeta { font-size: 12.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rmeta b { font-weight: 500; color: var(--text-2); }
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 22px; padding: 0 9px; border-radius: 99px;
+  font-size: 12px; font-weight: 550; white-space: nowrap;
+  background: var(--surface-3); color: var(--text-2);
+}
+.pill.sm { height: 19px; padding: 0 7px; font-size: 11px; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pc); }
+.due { font-size: 12.5px; color: var(--text-2); text-align: right; white-space: nowrap; }
+.due.late { color: var(--red-text); font-weight: 600; }
+.due.today { color: var(--accent-text); font-weight: 600; }
+.due.soon { color: var(--amber-text); font-weight: 600; }
+.due.none { color: var(--text-3); }
+.rest { font-size: 12.5px; color: var(--text-3); text-align: right; }
+
+.p0 { --pc: var(--p0); } .p1 { --pc: var(--p1); } .p2 { --pc: var(--p2); } .p3 { --pc: var(--p3); } .p4 { --pc: var(--p4); }
+
+.empty-row { padding: 18px 20px; color: var(--text-3); display: flex; align-items: center; gap: 10px; }
+.empty-row .ok { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--green-soft); color: var(--green-text); }
+
+/* cards (week / month / strip) */
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 9px 10px 9px 13px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform .12s, box-shadow .12s, border-color .12s;
+}
+.card::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--pc); }
+.card:hover { transform: translateY(-1px); box-shadow: var(--shadow); border-color: var(--border-2); }
+.card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.card-top .rid { font-size: 11.5px; }
+.card-top .pill { margin-left: auto; }
+.card-subj { font-size: 13px; font-weight: 550; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-foot { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 11.5px; color: var(--text-3); }
+.card-foot .proj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-foot .est { margin-left: auto; white-space: nowrap; }
+.card.late .card-subj { color: var(--red-text); }
+.card.late { background: linear-gradient(0deg, var(--red-soft), var(--red-soft)), var(--surface); border-color: transparent; }
+
+/* week */
+.strip { flex: none; display: flex; align-items: stretch; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+.strip-label {
+  flex: none; display: flex; flex-direction: column; justify-content: center;
+  padding: 0 14px; border-radius: 11px; background: var(--red-soft); color: var(--red-text);
+  font-size: 12px; font-weight: 600;
+}
+.strip-label b { font-size: 20px; line-height: 1.1; }
+.strip .card { flex: none; width: 250px; }
+.week { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(7, minmax(148px, 1fr)); gap: 10px; overflow-x: auto; }
+.col {
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.col-head { display: flex; align-items: baseline; gap: 8px; padding: 11px 12px 10px; border-bottom: 1px solid var(--border); }
+.col-wd { font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+.col-day { font-size: 20px; font-weight: 680; letter-spacing: -.02em; }
+.col-h { margin-left: auto; font-size: 12px; color: var(--text-3); }
+.col-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.col-empty { margin: auto; color: var(--text-3); font-size: 12.5px; padding: 18px 0; }
+.col.weekend .col-wd { color: var(--red-text); opacity: .75; }
+.col.past { opacity: .78; }
+.col.today { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: var(--surface); }
+.col.today .col-head { background: var(--accent-soft); border-radius: 13px 13px 0 0; border-bottom-color: transparent; }
+.col.today .col-wd, .col.today .col-day { color: var(--accent-text); }
+
+/* month */
+.month { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; }
+.mgrid {
+  min-height: 0;
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: 34px repeat(6, minmax(0, 1fr));
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.mh { background: var(--surface-2); display: grid; place-items: center; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+.mh.we { color: var(--red-text); opacity: .75; }
+.mc { background: var(--surface); padding: 6px 7px; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 3px; cursor: pointer; transition: background .12s; }
+.mc:hover { background: var(--surface-2); }
+.mc.we { background: var(--weekend); }
+.mc.out { background: var(--surface-2); }
+.mc.out .mc-num { color: var(--text-3); font-weight: 500; }
+.mc.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+.mc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1px; }
+.mc-num { font-size: 12.5px; font-weight: 650; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; margin: -2px 0 0 -3px; }
+.mc.today .mc-num { background: var(--accent); color: #fff; }
+.mc.late .mc-num { color: var(--red-text); }
+.mc.today.late .mc-num { color: #fff; }
+.mc-h { font-size: 11px; color: var(--text-3); }
+.chip {
+  font-size: 11.5px; line-height: 1.3; padding: 2px 6px 2px 7px;
+  border-radius: 5px; border-left: 3px solid var(--pc);
+  background: var(--surface-3); color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none;
+}
+.chip:hover { filter: brightness(.97); }
+.chip.late { background: var(--red-soft); color: var(--red-text); }
+.chip .cid { color: var(--text-3); margin-right: 3px; }
+.chip.late .cid { color: inherit; opacity: .7; }
+.mc-more { font-size: 11px; color: var(--text-3); padding-left: 4px; }
+.dayp { min-height: 0; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm); }
+.dayp-head { padding: 16px 18px 14px; border-bottom: 1px solid var(--border); }
+.dayp-wd { font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+.dayp-date { font-size: 20px; font-weight: 680; letter-spacing: -.02em; }
+.dayp-sum { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.dayp-sum.late { color: var(--red-text); }
+.dayp-body { flex: 1; min-height: 0; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.dayp-empty { margin: auto; text-align: center; color: var(--text-3); font-size: 13px; padding: 24px; }
+
+/* states */
+.state { max-width: 460px; margin: 9vh auto 0; text-align: center; }
+.state-ic { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 20px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--hero-1), var(--hero-2)); box-shadow: 0 12px 28px -10px rgba(31, 111, 235, .7); }
+.state-ic.red { background: linear-gradient(135deg, #f76b15, var(--red)); box-shadow: 0 12px 28px -10px rgba(229, 72, 77, .6); }
+.state-ic.green { background: linear-gradient(135deg, #30a46c, #22c1a4); box-shadow: 0 12px 28px -10px rgba(48, 164, 108, .6); }
+.state h3 { margin: 0 0 6px; font-size: 19px; }
+.state p { margin: 0 0 18px; color: var(--text-2); }
+.skel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 18px; }
+.skel-row { display: flex; align-items: center; gap: 16px; padding: 15px 18px; }
+.skel-row + .skel-row { border-top: 1px solid var(--border); }
+.sk { height: 11px; border-radius: 6px; background: linear-gradient(90deg, var(--surface-3) 0%, var(--surface-2) 50%, var(--surface-3) 100%); background-size: 200% 100%; animation: sh 1.3s ease-in-out infinite; }
+@keyframes sh { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* ---------- drawer ---------- */
+.scrim { position: fixed; inset: 0; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 20; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 21;
+  width: min(620px, 100vw);
+  background: var(--surface); box-shadow: var(--shadow-lg);
+  transform: translateX(104%); transition: transform .26s cubic-bezier(.2, .8, .2, 1);
+  display: flex; flex-direction: column;
+}
+.drawer-on .scrim.d { opacity: 1; pointer-events: auto; }
+.drawer-on .drawer { transform: none; }
+.dr-head { display: flex; align-items: center; gap: 10px; padding: 18px 22px 0; }
+.dr-head .rid { font-size: 13px; }
+.dr-head .btn { margin-left: auto; }
+.dr-body { flex: 1; overflow-y: auto; padding: 8px 22px 22px; }
+.dr-body h2 { margin: 6px 0 12px; font-size: 20px; line-height: 1.3; letter-spacing: -.015em; }
+.dr-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 0 0 18px; }
+.facts > div { background: var(--surface); padding: 10px 14px; }
+.facts dt { font-size: 11.5px; color: var(--text-3); margin-bottom: 2px; }
+.facts dd { margin: 0; font-weight: 550; }
+.facts dd.late { color: var(--red-text); }
+.facts dd.today { color: var(--accent-text); }
+.prog { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 13px; color: var(--text-2); }
+.prog .bar { flex: 1; }
+.dr-body h4 { margin: 0 0 8px; font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+.desc {
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; font-size: 13.5px; line-height: 1.55; color: var(--text);
+  max-height: none;
+}
+.desc.muted { color: var(--text-3); font-style: italic; }
+.dr-actions { display: flex; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--border); }
+.dr-actions .btn.primary { flex: 1; }
+
+/* ---------- modal ---------- */
+.modal-wrap { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px; pointer-events: none; }
+.modal-wrap .scrim { z-index: 0; }
+.modal {
+  position: relative; z-index: 1;
+  width: min(540px, 100%);
+  max-height: calc(100vh - 40px); overflow-y: auto;
+  background: var(--surface); border-radius: 20px; box-shadow: var(--shadow-lg);
+  padding: 24px 26px 22px;
+  opacity: 0; transform: translateY(10px) scale(.98); transition: opacity .2s, transform .2s;
+}
+.modal-on .modal-wrap { pointer-events: auto; }
+.modal-on .modal-wrap .scrim { opacity: 1; pointer-events: auto; }
+.modal-on .modal { opacity: 1; transform: none; }
+.modal-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+.modal-head .logo { width: 42px; height: 42px; border-radius: 13px; flex: none; }
+.modal-head h3 { margin: 0; font-size: 19px; letter-spacing: -.01em; }
+.modal-head p { margin: 2px 0 0; color: var(--text-2); font-size: 13.5px; }
+.modal-head .btn { margin-left: auto; }
+.field { display: block; margin-bottom: 14px; }
+.field > span { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.field small { display: block; margin-top: 6px; color: var(--text-3); font-size: 12.5px; }
+.input {
+  width: 100%; height: 40px; padding: 0 12px;
+  border: 1px solid var(--border-2); border-radius: 11px;
+  background: var(--surface-2); outline: 0;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: var(--surface); }
+.pw { position: relative; }
+.pw .input { padding-right: 44px; }
+.pw button { position: absolute; right: 4px; top: 4px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--text-3); display: grid; place-items: center; }
+.pw button:hover { background: var(--surface-3); color: var(--text); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.switch { display: flex; align-items: center; gap: 12px; padding: 8px 0; cursor: pointer; user-select: none; }
+.switch input { position: absolute; opacity: 0; pointer-events: none; }
+.sw { width: 38px; height: 22px; border-radius: 99px; background: var(--border-2); position: relative; flex: none; transition: background .2s; }
+.sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .2s; }
+.switch input:checked + .sw { background: var(--accent); }
+.switch input:checked + .sw::after { transform: translateX(16px); }
+.switch input:focus-visible + .sw { box-shadow: 0 0 0 3px var(--accent-soft); }
+.checkres { min-height: 0; margin: 8px 0 0; border-radius: 11px; font-size: 13.5px; }
+.checkres:not(:empty) { padding: 10px 13px; display: flex; gap: 9px; align-items: flex-start; }
+.checkres.ok { background: var(--green-soft); color: var(--green-text); }
+.checkres.err { background: var(--red-soft); color: var(--red-text); }
+.checkres.wait { background: var(--surface-2); color: var(--text-2); }
+.modal-actions { display: flex; align-items: center; gap: 8px; margin-top: 18px; }
+.modal-actions .grow { flex: 1; }
+.note { background: var(--amber-soft); color: var(--amber-text); border-radius: 11px; padding: 9px 12px; font-size: 13px; margin-bottom: 14px; }
+
+/* ---------- toasts ---------- */
+.toasts { position: fixed; right: 20px; bottom: 20px; z-index: 40; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  max-width: 420px; padding: 11px 15px 11px 12px;
+  border-radius: 12px; background: var(--toast-bg); color: var(--toast-text);
+  box-shadow: var(--shadow-lg); font-weight: 500; font-size: 13.5px;
+  animation: tin .25s cubic-bezier(.2, .8, .2, 1);
+}
+.toast .ti { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; background: rgba(255, 255, 255, .12); }
+.toast.ok .ti { background: var(--green); color: #fff; }
+.toast.err .ti { background: var(--red); color: #fff; }
+.toast.out { opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
+@keyframes tin { from { opacity: 0; transform: translateY(10px); } }
+
+/* ---------- people, avatars, timer ---------- */
+.av {
+  width: 28px; height: 28px; border-radius: 50%; flex: none;
+  display: inline-grid; place-items: center;
+  font-size: 11px; font-weight: 650; color: #fff; letter-spacing: .02em;
+  background: linear-gradient(135deg, hsl(var(--h, 230) 62% 58%), hsl(calc(var(--h, 230) + 40) 66% 46%));
+}
+.av.sm { width: 22px; height: 22px; font-size: 9.5px; }
+.av.lg { width: 34px; height: 34px; font-size: 13px; }
+.av.team { background: linear-gradient(135deg, #64748b, #334155); }
+.who { display: flex; flex-direction: column; gap: 2px; }
+.who button {
+  display: flex; align-items: center; gap: 10px;
+  height: 40px; padding: 0 8px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--text-2); text-align: left;
+}
+.who button:hover { background: var(--surface-2); color: var(--text); }
+.who button.on { background: var(--accent-soft); color: var(--accent-text); }
+.who .nm { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 550; }
+.who .cnt { font-size: 12px; color: var(--text-3); min-width: 18px; text-align: right; }
+.who .bad {
+  font-size: 11px; font-weight: 650; height: 18px; min-width: 18px; padding: 0 5px;
+  border-radius: 99px; display: inline-grid; place-items: center;
+  background: var(--red-soft); color: var(--red-text);
+}
+.link-btn {
+  margin-top: 4px; height: 34px; border: 1px dashed var(--border-2); border-radius: 10px;
+  background: transparent; color: var(--text-2); font-weight: 550;
+}
+.link-btn:hover { color: var(--accent-text); border-color: var(--accent); }
+.who-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 30px; padding: 0 12px 0 4px; border-radius: 99px;
+  background: var(--surface); border: 1px solid var(--border); font-weight: 600; font-size: 13px;
+}
+.title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rmeta .av { vertical-align: -6px; margin-right: 5px; }
+.card-foot .av { margin-left: auto; }
+
+.hero.timer {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(255, 255, 255, .22), transparent 55%),
+    linear-gradient(135deg, #10b981, #0ea5e9);
+  box-shadow: 0 10px 24px -10px rgba(14, 165, 233, .6);
+  flex-direction: column; align-items: stretch; gap: 6px;
+}
+.tm-top { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; opacity: .95; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+.tm-time { font: 650 30px/1.1 "Cascadia Mono", Consolas, monospace; letter-spacing: -.02em; }
+.tm-subj {
+  font-size: 12.5px; opacity: .92; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tm-subj:hover { text-decoration: underline; }
+.tm-stop {
+  margin-top: 4px; height: 32px; border: 0; border-radius: 9px;
+  background: rgba(255, 255, 255, .22); color: #fff; font-weight: 650;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.tm-stop:hover { background: rgba(255, 255, 255, .32); }
+
+.btn.go { background: #12a150; border-color: #12a150; color: #fff; }
+.btn.go:hover { filter: brightness(1.08); background: #12a150; }
+.btn.danger { background: var(--red); border-color: var(--red); color: #fff; }
+.btn.danger:hover { filter: brightness(1.06); background: var(--red); }
+.btn.danger-text { color: var(--red-text); }
+.btn.danger-text:hover { background: var(--red-soft); color: var(--red-text); }
+
+/* ---------- drawer editor ---------- */
+.dr-act { display: flex; align-items: center; gap: 8px; margin: 0 0 18px; flex-wrap: wrap; }
+.dr-act .grow { flex: 1; }
+.edit {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px; margin-bottom: 18px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-bottom: 10px; }
+.fld { display: block; min-width: 0; }
+.fld > span { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
+.fld .input { background: var(--surface); height: 36px; border-radius: 9px; }
+select.input { padding-right: 8px; }
+textarea.input { height: auto; min-height: 76px; padding: 9px 12px; resize: vertical; line-height: 1.45; }
+.ed-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.ed-hint { flex: 1; font-size: 12.5px; color: var(--text-3); }
+.ed-hint.dirty { color: var(--amber-text); }
+.hist { display: flex; flex-direction: column; }
+.jr { display: flex; gap: 10px; padding: 12px 0; }
+.jr + .jr { border-top: 1px solid var(--border); }
+.jr-b { min-width: 0; flex: 1; }
+.jr-h { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.jr-h span { color: var(--text-3); font-size: 12px; }
+.jr-ch { margin: 4px 0 0; padding: 0 0 0 16px; font-size: 12.5px; color: var(--text-2); }
+.jr-n { margin-top: 6px; white-space: pre-wrap; word-break: break-word; font-size: 13.5px; line-height: 1.5; }
+.muted-box { color: var(--text-3); font-size: 13px; padding: 4px 0 8px; }
+.sec-h { margin: 22px 0 8px; font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+
+/* ---------- time modal, team settings ---------- */
+.elapsed { text-align: center; padding: 6px 0 16px; }
+.elapsed .mono { display: block; font-size: 38px; font-weight: 650; letter-spacing: -.02em; }
+.elapsed small { color: var(--text-3); font-size: 13px; }
+.logo.green { background: linear-gradient(135deg, #10b981, #0ea5e9); box-shadow: 0 4px 12px rgba(14, 165, 233, .35); }
+.sect { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px; }
+.sect-h { font-size: 14px; font-weight: 650; margin-bottom: 2px; }
+.sect-p { font-size: 12.5px; color: var(--text-3); margin: 0 0 10px; }
+.team-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.team-list:empty::before { content: "Пока никого — добавь людей ниже"; color: var(--text-3); font-size: 13px; }
+.tchip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 4px 0 4px; border-radius: 99px;
+  background: var(--surface-2); border: 1px solid var(--border); font-size: 13px; font-weight: 550;
+}
+.tchip button { width: 22px; height: 22px; border: 0; border-radius: 50%; background: transparent; color: var(--text-3); display: grid; place-items: center; }
+.tchip button:hover { background: var(--red-soft); color: var(--red-text); }
+.team-add { display: flex; gap: 8px; margin-bottom: 8px; }
+.team-add .input { flex: 1; min-width: 0; height: 38px; }
+
+/* ---------- drag & drop ---------- */
+.drag-src { opacity: .4; }
+.drop-hover { box-shadow: inset 0 0 0 2px var(--accent) !important; background: var(--accent-soft) !important; }
+body.dragging .grp-head[data-drop] { border-radius: 10px; box-shadow: inset 0 0 0 1px var(--border-2); }
+.dock {
+  position: fixed; left: 50%; bottom: 22px; z-index: 35;
+  display: flex; align-items: stretch; gap: 8px; padding: 10px;
+  border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  transform: translate(-50%, 24px); opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+body.dragging .dock { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.dock-l { display: flex; align-items: center; padding: 0 8px 0 6px; font-size: 12px; line-height: 1.3; color: var(--text-3); font-weight: 600; }
+.dz {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 96px; padding: 8px 12px; border-radius: 12px;
+  border: 1.5px dashed var(--border-2); background: var(--surface-2);
+  font-size: 13px; transition: background .12s, border-color .12s;
+}
+.dz b { font-weight: 650; }
+.dz small { font-size: 11.5px; color: var(--text-3); }
+.dz.drop-hover { border-color: var(--accent); }
+.toast-btn { margin-left: 6px; height: 28px; padding: 0 11px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, .16); color: inherit; font-weight: 650; }
+.toast-btn:hover { background: rgba(255, 255, 255, .26); }
+.sugg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 30px; }
+.sugg-h { font-size: 12.5px; color: var(--text-3); margin-right: 2px; }
+.sugg button {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 4px;
+  border-radius: 99px; border: 1px dashed var(--border-2); background: transparent; font-size: 13px; font-weight: 550; color: var(--text-2);
+}
+.sugg button:hover { border-style: solid; border-color: var(--accent); color: var(--accent-text); background: var(--accent-soft); }
+
+/* ---------- project picker, team rows ---------- */
+.fld.wide { margin-bottom: 10px; }
+.combo { position: relative; }
+.combo-list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 5;
+  max-height: 280px; overflow-y: auto; padding: 4px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 11px; box-shadow: var(--shadow-lg);
+  display: none;
+}
+.combo-list.open { display: block; }
+.combo-item { padding: 7px 10px; border-radius: 7px; cursor: pointer; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.combo-item:hover, .combo-item.act { background: var(--surface-2); }
+.combo-item.on { color: var(--accent-text); font-weight: 600; }
+.combo-item small { color: var(--text-3); margin-left: 6px; }
+.combo-empty { padding: 8px 10px; color: var(--text-3); font-size: 13px; }
+.ed-note { font-size: 12.5px; color: var(--accent-text); background: var(--accent-soft); border-radius: 9px; padding: 7px 10px; margin: 0 0 10px; }
+.ed-note:empty { display: none; }
+.team-list { flex-direction: column; flex-wrap: nowrap; }
+.trow { display: flex; align-items: center; gap: 9px; padding: 6px 6px 6px 8px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface-2); }
+.trow .tname { font-weight: 600; font-size: 13.5px; white-space: nowrap; }
+.trow .tproj { flex: 1; min-width: 0; font-size: 12.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trow button { width: 26px; height: 26px; border: 0; border-radius: 50%; background: transparent; color: var(--text-3); display: grid; place-items: center; flex: none; }
+.trow button:hover { background: var(--red-soft); color: var(--red-text); }
+
+/* ---------- custom fields ---------- */
+.cf-h { font-size: 12px; font-weight: 650; color: var(--text-2); margin: 2px 0 6px; }
+.fld em { font-style: normal; color: var(--red-text); font-weight: 600; font-size: 11px; margin-left: 4px; }
+#cfBox .need { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+
+/* ---------- решённые задачи — в конец дня и приглушённо ---------- */
+.row.done .rsubj, .row.done .rid, .card.done .card-subj, .chip.done { opacity: .55; }
+.row.done .pbar, .card.done::before { opacity: .35; }
+.row.done .status, .card.done .pill, .chip.done { color: var(--green-text); }
+.row.done .status, .card.done .pill { background: var(--green-soft); }
+
+/* ---------- подзадачи, родитель ---------- */
+.parent-link {
+  display: flex; align-items: center; gap: 6px; margin: -6px 0 14px;
+  font-size: 13px; color: var(--text-2); cursor: pointer; min-width: 0;
+}
+.parent-link span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.parent-link:hover { color: var(--accent-text); }
+.subs { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
+.sub {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px 8px calc(12px + var(--d, 0) * 20px);
+  font-size: 13px; cursor: pointer;
+}
+.sub + .sub { border-top: 1px solid var(--border); }
+.sub:hover { background: var(--surface-2); }
+.sub .rid { font-size: 11.5px; flex: none; }
+.sub .pill { flex: none; }
+.sub-s { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub-d { font-size: 12px; color: var(--text-3); white-space: nowrap; flex: none; }
+.sub-d.late { color: var(--red-text); font-weight: 600; }
+.sub.closed .sub-s, .sub.closed .rid, .sub.noaccess .sub-s, .sub.noaccess .rid { opacity: .55; }
+.sub.noaccess { cursor: default; }
+.sub.noaccess:hover { background: transparent; }
+.subs.hide-closed .sub.closed { display: none; }
+.pill.ok { background: var(--green-soft); color: var(--green-text); }
+.sub-more { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sub-more .prog { flex: 1; margin: 0; }
+.link { border: 0; background: transparent; color: var(--accent-text); font-weight: 600; font-size: 12.5px; padding: 4px 0; cursor: pointer; white-space: nowrap; }
+.link:hover { text-decoration: underline; }
+
+/* ---------- быстрый перенос срока в карточке ---------- */
+.qdue { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: -8px 0 16px; font-size: 12.5px; color: var(--text-3); }
+.qchip {
+  height: 28px; padding: 0 10px; border-radius: 99px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); font-size: 12.5px; font-weight: 600;
+}
+.qchip small { font-weight: 500; color: var(--text-3); }
+.qchip:hover { border-color: var(--accent); color: var(--accent-text); background: var(--accent-soft); }
+
+/* ---------- доступ с телефона (настройки) ---------- */
+.remote-urls { margin: 4px 0 10px; padding: 10px 12px; border-radius: 11px; background: var(--green-soft); color: var(--green-text); font-size: 13px; }
+.remote-urls.off { background: var(--surface-2); color: var(--text-2); }
+.remote-urls.err { background: var(--red-soft); color: var(--red-text); }
+.remote-urls code { font: 600 13px "Cascadia Mono", Consolas, monospace; user-select: all; }
+.sess { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 11px; margin-bottom: 6px; font-size: 13px; }
+.sess-b { flex: 1; min-width: 0; }
+.sess-b small { display: block; color: var(--text-3); font-size: 12px; }
+
+/* ---------- телефон ---------- */
+.tabbar, .mtop, .mc-cnt { display: none; }
+.mc-cnt {
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; place-items: center;
+  font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent-text);
+}
+.mc-cnt.late { background: var(--red-soft); color: var(--red-text); }
+
+/* ---------- текст из Redmine (Textile) ---------- */
+.rich { white-space: normal; }
+.rich > :first-child { margin-top: 0; }
+.rich p { margin: 0 0 10px; }
+.rich p:last-child, .rich ul:last-child, .rich ol:last-child { margin-bottom: 0; }
+.rich h2, .rich h3, .rich h4, .rich h5, .rich h6 { margin: 14px 0 6px; font-size: 15px; line-height: 1.3; }
+.rich h2 { font-size: 17px; }
+.rich ul, .rich ol { margin: 0 0 10px; padding-left: 22px; }
+.rich li { margin: 3px 0; }
+.rich a { color: var(--accent-text); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent-text) 35%, transparent); word-break: break-word; cursor: pointer; }
+.rich a:hover { border-bottom-color: var(--accent-text); }
+.rich code { font: 12.5px "Cascadia Mono", Consolas, monospace; background: var(--surface-3); padding: 1px 5px; border-radius: 5px; word-break: break-all; }
+.rich pre { margin: 0 0 10px; background: var(--surface-3); padding: 10px 12px; border-radius: 9px; overflow-x: auto; font: 12.5px/1.5 "Cascadia Mono", Consolas, monospace; white-space: pre; }
+.rich blockquote { margin: 0 0 10px; padding: 4px 12px; border-left: 3px solid var(--border-2); color: var(--text-2); }
+.rich hr { border: 0; border-top: 1px solid var(--border); margin: 12px 0; }
+.rich img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); display: block; margin: 6px 0; cursor: zoom-in; }
+.rich details.clp { margin: 4px 0 10px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; background: var(--surface); }
+.rich details.clp > summary { cursor: pointer; padding: 8px 0; font-weight: 600; color: var(--accent-text); }
+.rich details.clp[open] { padding-bottom: 10px; }
+.rich .tbl { overflow-x: auto; margin: 0 0 10px; }
+.rich table { border-collapse: collapse; font-size: 13px; }
+.rich td, .rich th { border: 1px solid var(--border); padding: 5px 8px; text-align: left; vertical-align: top; }
+.rich th { background: var(--surface-3); }
+.rich .iref { font-family: "Cascadia Mono", Consolas, monospace; font-size: .92em; }
+.files { display: flex; flex-wrap: wrap; gap: 8px; }
+.file {
+  display: flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 10px 6px 6px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); color: var(--text); text-decoration: none; font-size: 13px;
+}
+.file:hover { border-color: var(--accent); }
+.file img, .file .fi { width: 40px; height: 40px; border-radius: 7px; object-fit: cover; flex: none; background: var(--surface-3); display: grid; place-items: center; color: var(--text-3); }
+.file span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file small { color: var(--text-3); flex: none; }
+
+/* ---------- новая задача ---------- */
+.modal.wide { width: min(680px, 100%); }
+.cr-desc-h { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+.tabs2 { display: inline-flex; margin-left: 6px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tabs2 button { height: 26px; padding: 0 10px; border: 0; background: transparent; color: var(--text-2); font-size: 12px; font-weight: 600; }
+.tabs2 button.on { background: var(--accent-soft); color: var(--accent-text); }
+.cr-desc-h .link { margin-left: auto; }
+#crForm textarea { min-height: 160px; font: 13px/1.5 "Cascadia Mono", Consolas, monospace; }
+#crPreview { min-height: 160px; }
+#crForm .fld .input { background: var(--surface-2); }
+.btn .lbl { display: inline; }
+
+/* ---------- спокойнее и удобнее ---------- */
+body { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row:focus-visible, .card:focus-visible { outline-offset: -2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; }
+
+.hero { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+.hero-num { color: var(--accent-text); }
+.hero-m { color: var(--text-2); opacity: 1; }
+.hero.timer { background: #0e9f6e; color: #fff; border-color: transparent; box-shadow: 0 10px 22px -12px rgba(14, 159, 110, .7); }
+.logo { box-shadow: none; }
+.logo.green { background: #0e9f6e; box-shadow: none; }
+.state-ic { box-shadow: none; }
+
+.title-row h1 { max-width: 46vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewseg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 12px; background: var(--surface-3); align-self: center; }
+.viewseg button {
+  height: 32px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent;
+  color: var(--text-2); font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 7px;
+}
+.viewseg button:hover { color: var(--text); }
+.viewseg button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+.row { position: relative; }
+.row-acts {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 2px; padding: 3px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none; transition: opacity .12s;
+}
+.row:hover .row-acts, .row:focus-within .row-acts { opacity: 1; pointer-events: auto; }
+.ra { width: 30px; height: 30px; border: 0; border-radius: 7px; background: transparent; color: var(--text-2); display: grid; place-items: center; }
+.ra:hover { background: var(--surface-2); color: var(--text); }
+.ra.go:hover, .ra.on { color: #0e9f6e; }
+@media (hover: none) { .row-acts { display: none; } }
+
+.ihint {
+  display: flex; align-items: center; gap: 10px; margin: 0 12px 10px; padding: 10px 12px;
+  border-radius: 14px; background: var(--accent-soft); color: var(--accent-text); font-size: 13px; line-height: 1.4;
+}
+.ihint .ic { flex: none; }
+.ihint button { margin-left: auto; flex: none; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: grid; place-items: center; }
+.ihint:empty { display: none; }
+
+#brandLogo { background: none; overflow: hidden; }
+#brandLogo img { width: 100%; height: 100%; display: block; }
+.top > div:first-child { min-width: 0; }
+.top p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.grp.tone-green .grp-dot { background: var(--green); }
+.grp.tone-green .grp-count { background: var(--green-soft); color: var(--green-text); }
+
+@media (max-width: 1150px) {
+  .viewseg button { padding: 0 10px; }
+  .month { grid-template-columns: minmax(0, 1fr); }
+  .dayp { display: none; }
+  .row { grid-template-columns: 4px 76px minmax(0, 1fr) 150px 46px; }
+  .row .status { display: none; }
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { display: none; }
+  .top { flex-wrap: wrap; padding: 16px; }
+  .tools { margin-left: 0; width: 100%; }
+  .search { flex: 1; width: auto; }
+  .view { padding: 2px 16px 16px; }
+  .banner { margin: 0 16px 12px; }
+}
+@media (max-width: 760px) {
+  .app { height: 100dvh; }
+  .top { padding: 12px 12px 8px; gap: 8px; align-items: center; }
+  .top h1 { font-size: 20px; }
+  .top p { display: none; }
+  .tools { gap: 6px; }
+  .search { height: 40px; padding-left: 10px; min-width: 0; }
+  .search input { width: 100%; }
+  .tools { width: 100%; }
+  .search kbd { display: none; }
+  .select { max-width: 38%; height: 40px; }
+  .btn.icon#refreshBtn { width: 40px; height: 40px; }
+  #newBtn { width: 40px; height: 40px; padding: 0; flex: none; }
+  #newBtn .lbl { display: none; }
+  .who-chip, .viewseg { display: none; }
+  .title-row h1 { max-width: 60vw; }
+
+  .mtop { display: block; padding: 0 12px 8px; }
+  .mtimer {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 9px 10px 9px 12px;
+    border-radius: 14px; color: #fff; background: #0e9f6e;
+  }
+  .mtimer .mono { font-weight: 700; font-size: 17px; }
+  .mtimer .mt-s { flex: 1; min-width: 0; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .92; }
+  .mtimer button { height: 32px; padding: 0 12px; border: 0; border-radius: 9px; background: rgba(255, 255, 255, .22); color: #fff; font-weight: 700; }
+  .mstats { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .mstats::-webkit-scrollbar { display: none; }
+  .mchip {
+    flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
+    border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+    font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .mchip b { color: var(--text); }
+  .mchip.red { background: var(--red-soft); border-color: transparent; color: var(--red-text); }
+  .mchip.red b { color: var(--red-text); }
+  .mchip .av { width: 22px; height: 22px; font-size: 9.5px; margin-left: -6px; }
+
+  .view { padding: 2px 12px calc(86px + env(safe-area-inset-bottom)); }
+  .view.fill { display: block; overflow: auto; }
+  .banner { margin: 0 12px 10px; }
+  .tabbar {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 15;
+    background: var(--side); border-top: 1px solid var(--border);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tabbar button {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 5px 0;
+    border: 0; border-radius: 12px; background: transparent; color: var(--text-3); font-size: 11px; font-weight: 600;
+  }
+  .tabbar button.on { color: var(--accent-text); }
+  .tabbar button.on .ic { transform: scale(1.08); }
+
+  .grp-note { display: none; }
+  .row { grid-template-columns: 4px minmax(0, 1fr) auto; gap: 10px; padding: 11px 12px 11px 0; }
+  .row .rid, .row .status, .row .rest { display: none; }
+  .rsubj { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .due { font-size: 12px; }
+
+  .vbar { flex-wrap: wrap; }
+  .vbar h2 { min-width: 0; }
+  .vbar-note { width: 100%; margin-left: 0; }
+  .week { display: flex; flex-direction: column; overflow: visible; }
+  .col-body { overflow: visible; }
+  .col-empty { padding: 6px 0; }
+  .col:has(.col-empty) .col-body { display: none; }
+  .col:has(.col-empty) .col-head { border-bottom: 0; padding-top: 8px; padding-bottom: 8px; }
+  .col:has(.col-empty) .col-day { font-size: 16px; }
+  .col:has(.col-empty) .col-head::after { content: "свободно"; margin-left: auto; color: var(--text-3); font-size: 12px; }
+  .strip-label { padding: 0 12px; }
+  .strip .card { width: 220px; }
+
+  .month { display: flex; flex-direction: column; gap: 12px; }
+  .mgrid { grid-template-rows: 30px repeat(6, 50px); }
+  .mc { padding: 4px; align-items: center; }
+  .mc-top { flex-direction: column; gap: 3px; }
+  .mc .chip, .mc .mc-more, .mc-h { display: none; }
+  .mc-cnt { display: inline-grid; }
+  .mc-num { margin: 0; }
+  .dayp { display: flex; }
+  .dayp-body { overflow: visible; }
+
+  .drawer { width: 100vw; }
+  .dr-head { padding: 12px 12px 0; }
+  .dr-body { padding: 6px 14px calc(24px + env(safe-area-inset-bottom)); }
+  .dr-body h2 { font-size: 18px; }
+  .form-grid, .facts, .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .dr-act .btn { height: 40px; }
+  .modal-wrap { place-items: end center; padding: 0; }
+  .modal { width: 100%; max-height: 92dvh; border-radius: 22px 22px 0 0; padding: 20px 16px calc(18px + env(safe-area-inset-bottom)); }
+  .modal-actions { flex-wrap: wrap; }
+  .toasts { left: 12px; right: 12px; bottom: calc(82px + env(safe-area-inset-bottom)); align-items: stretch; }
+  .toast { max-width: none; }
+  .dock { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="logo" id="brandLogo"></div>
+      <div><b>Redmine</b><span>календарь задач</span></div>
+    </div>
+    <div id="hero"></div>
+    <div id="whoSec"></div>
+    <div class="stats" id="stats"></div>
+    <div class="loadbox" id="load"></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot" id="foot"></div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <div class="title-row"><h1 id="vTitle">Мои задачи</h1><span id="whoChip"></span></div>
+        <p id="vSub"></p>
+      </div>
+      <div class="viewseg" id="viewSeg" role="tablist" aria-label="Вид"></div>
+      <div class="tools">
+        <label class="search" id="searchBox">
+          <span id="searchIc"></span>
+          <input id="q" type="search" placeholder="Поиск: номер, тема, проект" autocomplete="off" spellcheck="false">
+          <kbd>/</kbd>
+        </label>
+        <select class="select" id="proj" aria-label="Проект"></select>
+        <button class="btn icon" id="refreshBtn" data-act="refresh" title="Обновить задачи (R)"></button>
+        <button class="btn primary" id="newBtn" data-act="new-issue" title="Новая задача (N)"></button>
+      </div>
+    </header>
+    <div class="ihint" id="ihint"></div>
+    <div class="mtop" id="mtop"></div>
+    <div class="banner" id="banner"></div>
+    <section class="view" id="view"></section>
+  </main>
+</div>
+<nav class="tabbar" id="tabbar"></nav>
+
+<div class="scrim d" data-act="close-drawer"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<div class="modal-wrap">
+  <div class="scrim" data-act="close-modal"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div class="dock" id="dock"></div>
+
+<script>
+"use strict";
+const TOKEN = "__RC_TOKEN__";
+const DEMO = __RC_DEMO__;
+const REMOTE = __RC_REMOTE__;  // открыто с телефона: вход по PIN, часть настроек недоступна
+const mobileMQ = matchMedia("(max-width: 760px)");
+const isMobile = () => mobileMQ.matches;
+
+/* ---------------------------------------------------------------- helpers */
+const $ = (s, r = document) => r.querySelector(s);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("rc." + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("rc." + k, JSON.stringify(v)); } catch { /* приватный режим */ } },
+};
+
+const WD = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
+const WDS = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
+const MON = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+const MON_GEN = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+const MON_S = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+
+const wd = d => (d.getDay() + 6) % 7;
+const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const parseD = s => { if (!s) return null; const [y, m, d] = s.slice(0, 10).split("-").map(Number); return new Date(y, m - 1, d); };
+const diff = (a, b) => Math.round((a - b) / 864e5);
+const mondayOf = d => addDays(d, -wd(d));
+const same = (a, b) => a && b && +a === +b;
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const longDate = d => `${d.getDate()} ${MON_GEN[d.getMonth()]}`;
+const plural = (n, one, few, many) => {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b === 1) return one;
+  if (b >= 2 && b <= 4) return few;
+  return many;
+};
+const tasksWord = n => `${n} ${plural(n, "задача", "задачи", "задач")}`;
+const fmtH = h => {  // длительность в часах → «1:24»
+  if (!h) return "";
+  const mins = Math.round(Math.abs(+h) * 60);
+  return `${+h < 0 ? "−" : ""}${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, "0")}`;
+};
+// «0:24», «1:24», «1.5» (часы), «90м» / «90 мин» → часы; иначе null
+const parseHM = raw => {
+  const s = String(raw || "").trim().toLowerCase().replace(",", ".");
+  let m = s.match(/^(\d{1,2}):(\d{1,2})$/);
+  if (m) return +m[2] < 60 ? +m[1] + +m[2] / 60 : null;
+  m = s.match(/^(\d+)\s*(м|мин|m|min)$/);
+  if (m) return +m[1] / 60;
+  m = s.match(/^\d+(\.\d+)?$/);
+  return m ? +s : null;
+};
+const sumH = list => list.reduce((s, i) => s + (+i.est || 0), 0);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const nameInitials = n => {
+  const p = String(n || "").replace(/\./g, " ").split(/\s+/).filter(Boolean);
+  if (!p.length) return "?";
+  return ((p[0][0] || "") + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase();
+};
+const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.codePointAt(0)) % 360; return h; };
+const avatar = (name, cls = "") => `<span class="av ${cls}" style="--h:${hue(name)}" title="${esc(name)}">${esc(nameInitials(name))}</span>`;
+const two = n => String(n).padStart(2, "0");
+const fmtClock = sec => `${two(Math.floor(sec / 3600))}:${two(Math.floor(sec % 3600 / 60))}:${two(sec % 60)}`;
+const fmtDur = sec => {
+  const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60);
+  return h ? `${h} ч ${m} мин` : `${m} мин`;
+};
+const fmtDT = s => s ? new Date(s).toLocaleString("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : "—";
+
+function prio(i) {
+  const n = (i.priority || "").toLowerCase();
+  if (n.includes("немедл") || n.includes("immediate")) return 4;
+  if (n.includes("сроч") || n.includes("urgent")) return 3;
+  if (n.includes("выс") || n.includes("high")) return 2;
+  if (n.includes("низ") || n.includes("low")) return 0;
+  return 1;
+}
+// «Решена» — работа сделана, ждёт проверки: такие задачи уходят в конец своего дня
+const isDone = i => /решен|resolved/i.test(i.status || "");
+const isLate = i => !!i._due && i._due < S.today && !isDone(i);
+const byPrio = (a, b) => (isDone(a) - isDone(b)) || (prio(b) - prio(a)) || (b.priority_id - a.priority_id) || (a.id - b.id);
+const byDue = (a, b) => (isDone(a) - isDone(b)) || (a._due - b._due) || byPrio(a, b);
+
+function dueInfo(i, t) {
+  const d = i._due;
+  if (!d) return { text: "без срока", cls: "none" };
+  const n = diff(d, t);
+  if (n < 0 && isDone(i)) return { text: `${WDS[wd(d)]}, ${d.getDate()} ${MON_S[d.getMonth()]}`, cls: "" };
+  if (n < 0) return { text: `просрочено на ${-n} ${plural(-n, "день", "дня", "дней")}`, cls: "late" };
+  if (n === 0) return { text: "сегодня", cls: "today" };
+  if (n === 1) return { text: "завтра", cls: "soon" };
+  const base = `${WDS[wd(d)]}, ${d.getDate()} ${MON_S[d.getMonth()]}`;
+  if (n < 7) return { text: base, cls: "" };
+  return { text: `${d.getDate()} ${MON_S[d.getMonth()]}${d.getFullYear() !== t.getFullYear() ? " " + d.getFullYear() : ""}`, cls: "" };
+}
+
+/* ---------------------------------------------------------------- icons */
+const P = {
+  refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  list: '<path d="M9 6h12M9 12h12M9 18h12"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/>',
+  week: '<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16M15 4v16"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  calcheck: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>',
+  left: '<path d="m15 18-6-6 6-6"/>',
+  right: '<path d="m9 18 6-6-6-6"/>',
+  down: '<path d="m6 9 6 6 6-6"/>',
+  ext: '<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>',
+  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  plug: '<path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v5"/>',
+  play: '<path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  party: '<path d="M5.8 11.3 2 22l10.7-3.8"/><path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01"/><path d="m22 2-2.2.8a2.9 2.9 0 0 0-1.9 3.2c.1.9-.6 1.6-1.4 1.6H16"/><path d="M11 13c1.9 1.9 2.6 4.5 1.7 5.3-.9.9-3.4.2-5.3-1.7-1.9-1.9-2.6-4.5-1.7-5.3.9-.9 3.4-.2 5.3 1.7z"/>',
+};
+const ic = (n, s = 16, w = 2) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+
+/* ---------------------------------------------------------------- state */
+const S = {
+  cfg: null,
+  mine: [],
+  team: [],
+  user: null,
+  fetchedAt: null,
+  error: null,
+  loading: false,
+  details: {},
+  openId: null,
+  who: store.get("who", "me"),
+  view: store.get("view", "plan"),
+  q: "",
+  project: "",
+  today: today(),
+  weekStart: mondayOf(today()),
+  month: new Date(today().getFullYear(), today().getMonth(), 1),
+  selDay: today(),
+  collapsed: store.get("collapsed", { nodue: true }),
+  theme: store.get("theme", "auto"),
+  timer: null,
+  timerBase: 0,
+  version: null,
+  teamDraft: [],
+  projects: null,
+  projOpts: {},
+  fieldsCache: {},
+  drawerStack: [],
+};
+let refreshTimer = null;
+
+/* ---------------------------------------------------------------- api */
+async function api(path, body) {
+  const opts = { headers: { "X-RC-Token": TOKEN } };
+  if (body !== undefined) {
+    opts.method = "POST";
+    opts.headers["Content-Type"] = "application/json";
+    opts.body = JSON.stringify(body);
+  }
+  let r;
+  try { r = await fetch(path, opts); } catch { throw new Error("Программа не отвечает — закрой окно и запусти её снова"); }
+  const data = await r.json().catch(() => ({}));
+  if (r.status === 401 && REMOTE) { location.reload(); throw new Error("Нужно войти заново"); }
+  if (!r.ok) { const e = new Error(data.error || `Ошибка ${r.status}`); e.data = data; throw e; }
+  return data;
+}
+
+const prep = list => list.map(i => ({ ...i, _due: parseD(i.due) }));
+
+async function load(manual) {
+  if (S.loading || !S.cfg?.configured) return;
+  S.loading = true;
+  renderRefresh();
+  if (!S.fetchedAt) renderView();
+  try {
+    const hasTeam = (S.cfg.team || []).length > 0;
+    const [m, t] = await Promise.all([
+      api("/api/issues?who=me"),
+      hasTeam ? api("/api/issues?who=team") : Promise.resolve({ issues: [] }),
+    ]);
+    S.mine = prep(m.issues);
+    S.team = prep(t.issues);
+    S.user = m.user;
+    if (!S.fetchedAt && !DEMO) setTimeout(() => { loadCandidates(true); ensureTeamProjects(); }, 3000);  // подсказки для «Команды» собираются долго — заранее
+    S.fetchedAt = new Date();
+    S.error = null;
+    if (manual) toast(`Обновлено: ${tasksWord(baseList().length)}`, "ok");
+  } catch (e) {
+    S.error = e.message;
+    if (manual || S.fetchedAt) toast(e.message, "err");
+  } finally {
+    S.loading = false;
+    S.today = today();
+    render();
+    scheduleRefresh();
+  }
+}
+
+function scheduleRefresh() {
+  clearTimeout(refreshTimer);
+  if (S.cfg?.configured) refreshTimer = setTimeout(() => load(false), (S.cfg.refresh_min || 15) * 60000);
+}
+
+/* ---------------------------------------------------------------- whose tasks */
+const team = () => S.cfg?.team || [];
+const myName = () => S.user ? `${S.user.firstname || ""} ${S.user.lastname || ""}`.trim() : "Я";
+const ofPerson = id => S.team.filter(i => i.assignee && String(i.assignee.id) === String(id));
+
+function baseList() {
+  if (S.who === "me") return S.mine;
+  if (S.who === "team") return S.team;
+  return ofPerson(S.who);
+}
+
+function whoName() {
+  if (S.who === "me") return "Мои задачи";
+  if (S.who === "team") return "Вся команда";
+  return team().find(m => String(m.id) === String(S.who))?.name || "Сотрудник";
+}
+
+function fixWho() {
+  const ok = S.who === "me" || (S.who === "team" && team().length > 1) || team().some(m => String(m.id) === String(S.who));
+  if (!ok) { S.who = "me"; store.set("who", "me"); }
+}
+
+function setWho(who) {
+  S.who = String(who);
+  store.set("who", S.who);
+  S.project = "";
+  render();
+  $("#view").scrollTop = 0;
+}
+
+function visible() {
+  const q = S.q.trim().toLowerCase().replace(/^#/, "");
+  return baseList().filter(i =>
+    (!S.project || i.project === S.project) &&
+    (!q || `${i.id} ${i.subject} ${i.project} ${i.status} ${i.tracker} ${i.assignee?.name || ""}`.toLowerCase().includes(q)));
+}
+
+function planGroups(list, t) {
+  const g = [];
+  const late = list.filter(isLate).sort(byDue);
+  if (late.length) g.push({ key: "late", title: "Просрочено", note: "", items: late, tone: "red" });
+  for (let n = 0; n <= 7; n++) {
+    const d = addDays(t, n);
+    const items = list.filter(i => same(i._due, d)).sort(byPrio);
+    const note = `${WD[wd(d)]}, ${longDate(d)}`;
+    const drop = ymd(d);
+    if (n === 0) g.push({ key: "today", title: "Сегодня", note, items, tone: "accent", drop });
+    else if (n === 1) g.push({ key: "tomorrow", title: "Завтра", note, items, tone: "amber", drop });
+    else if (items.length) g.push({ key: "d" + n, title: cap(WD[wd(d)]), note: longDate(d), items, tone: "", drop });
+  }
+  const h = addDays(t, 7);
+  const later = list.filter(i => i._due && i._due > h).sort(byDue);
+  if (later.length) g.push({ key: "later", title: "Позже", note: `после ${longDate(h)}`, items: later, tone: "" });
+  const nodue = list.filter(i => !i._due).sort(byPrio);
+  if (nodue.length) g.push({ key: "nodue", title: "Без срока", note: "", items: nodue, tone: "", drop: "" });
+  const doneOld = list.filter(i => i._due && i._due < t && isDone(i)).sort(byDue);
+  if (doneOld.length) g.push({ key: "doneold", title: "Решены", note: "срок прошёл, ждут проверки и закрытия", items: doneOld, tone: "green" });
+  return g;
+}
+
+/* ---------------------------------------------------------------- render: shell */
+function render() {
+  fixWho();
+  renderSide();
+  renderMobile();
+  renderTop();
+  renderBanner();
+  renderView();
+  updateTitle();
+}
+
+function renderHero() {
+  const t = S.today;
+  if (S.timer) {
+    $("#hero").innerHTML = `<div class="hero timer">
+      <div class="tm-top"><span class="pulse"></span>Идёт работа</div>
+      <div class="tm-time" data-timer>${fmtClock(elapsed())}</div>
+      <div class="tm-subj" data-id="${S.timer.issue_id}" title="${esc(S.timer.subject)}">#${S.timer.issue_id} ${esc(S.timer.subject)}</div>
+      <button class="tm-stop" data-act="timer-stop">${ic("stop", 13)}Стоп и записать время</button>
+    </div>`;
+  } else {
+    $("#hero").innerHTML = `<div class="hero">
+      <div class="hero-num">${t.getDate()}</div>
+      <div><div class="hero-wd">${cap(WD[wd(t)])}</div><div class="hero-m">${MON_GEN[t.getMonth()]} ${t.getFullYear()}</div></div>
+    </div>`;
+  }
+}
+
+function whoItems() {
+  const t = S.today, people = team();
+  const item = (who, name, list, av) => {
+    const late = list.filter(isLate).length;
+    const counts = S.fetchedAt
+      ? `${late ? `<span class="bad" title="Просрочено: ${late}">${late}</span>` : ""}<span class="cnt" title="Открытых задач: ${list.length}">${list.length}</span>`
+      : "";
+    return `<button class="${S.who === String(who) ? "on" : ""}" data-who="${who}">${av}<span class="nm">${esc(name)}</span>${counts}</button>`;
+  };
+  let html = item("me", "Мои задачи", S.mine, avatar(myName()));
+  for (const m of people) html += item(m.id, m.name, ofPerson(m.id), avatar(m.name));
+  if (people.length > 1) html += item("team", "Вся команда", S.team, `<span class="av team">${ic("users", 14)}</span>`);
+  return html;
+}
+
+function renderWho() {
+  if (!S.cfg?.configured) { $("#whoSec").innerHTML = ""; return; }
+  let html = `<div class="nav-h">Чьи задачи</div><div class="who">${whoItems()}</div>`;
+  if (!team().length && !REMOTE) html += `<button class="link-btn" data-act="settings-team" style="width:100%">+ Добавить подчинённых</button>`;
+  $("#whoSec").innerHTML = html;
+}
+
+function openWhoSheet() {
+  showModal(`<div class="modal-head"><div><h3>Чьи задачи</h3><p>Выбери, чей план показывать</p></div>
+    <button class="btn ghost sm icon" data-act="close-modal" title="Закрыть">${ic("x", 18)}</button></div>
+    <div class="who">${whoItems()}</div>
+    ${!team().length ? `<p class="sect-p" style="margin-top:12px">Подчинённых можно добавить в настройках на компьютере.</p>` : ""}`);
+}
+
+function renderMobile() {
+  const t = S.today, all = baseList();
+  const late = all.filter(isLate).length;
+  const tod = all.filter(i => same(i._due, t)).length;
+  const tom = all.filter(i => same(i._due, addDays(t, 1))).length;
+  const whoAv = S.who === "me" ? avatar(myName(), "sm") : S.who === "team" ? `<span class="av sm team">${ic("users", 12)}</span>` : avatar(whoName(), "sm");
+  $("#mtop").innerHTML = (S.timer ? `<div class="mtimer"><span class="pulse"></span><span class="mono" data-timer>${fmtClock(elapsed())}</span>
+      <span class="mt-s" data-id="${S.timer.issue_id}">#${S.timer.issue_id} ${esc(S.timer.subject)}</span>
+      <button data-act="timer-stop">Стоп</button></div>` : "")
+    + `<div class="mstats">
+      <button class="mchip" data-act="who-sheet">${whoAv}${esc(whoName())} ${ic("down", 13)}</button>
+      ${S.fetchedAt ? `<button class="mchip ${late ? "red" : ""}" data-act="goto" data-target="late">Просрочено <b>${late}</b></button>
+      <button class="mchip" data-act="goto" data-target="today">Сегодня <b>${tod}</b></button>
+      <button class="mchip" data-act="goto" data-target="tomorrow">Завтра <b>${tom}</b></button>` : ""}
+    </div>`;
+  const tab = (v, icon, label, act) => `<button class="${S.view === v && !act ? "on" : ""}" ${act ? `data-act="${act}"` : `data-view="${v}"`}>${ic(icon, 21)}<span>${label}</span></button>`;
+  $("#tabbar").innerHTML = tab("plan", "list", "План") + tab("week", "week", "Неделя") + tab("month", "cal", "Месяц")
+    + tab("", "users", "Люди", "who-sheet") + tab("", "gear", "Ещё", "settings");
+}
+
+function renderSide() {
+  renderHero();
+  renderWho();
+  const t = S.today, all = baseList();
+  const late = all.filter(isLate);
+  const tod = all.filter(i => same(i._due, t));
+  const tom = all.filter(i => same(i._due, addDays(t, 1)));
+  const week = all.filter(i => i._due && i._due >= t && i._due <= addDays(t, 6));
+  const tile = (label, v, cls, act, target) =>
+    `<button class="stat ${cls}" data-act="${act}" data-target="${target}"><div class="stat-l"><i></i>${label}</div><div class="stat-v">${S.fetchedAt ? v : "—"}</div></button>`;
+  $("#stats").innerHTML =
+    tile("Просрочено", late.length, late.length ? "red" : "green", "goto", "late") +
+    tile("Сегодня", tod.length, "accent", "goto", "today") +
+    tile("Завтра", tom.length, "amber", "goto", "tomorrow") +
+    tile("7 дней", week.length, "", "goto-week", "");
+
+  const people = S.who === "team" ? Math.max(1, team().length) : 1;
+  const wh = +(S.cfg?.workday_hours || 8) * people;
+  const h = sumH(tod) + sumH(late);
+  const pct = Math.min(100, Math.round(h / wh * 100));
+  const over = h > wh;
+  const label = S.who === "team" ? "Загрузка команды на сегодня" : "Загрузка на сегодня";
+  $("#load").innerHTML = S.fetchedAt ? `
+    <div class="load-row"><span>${label}</span><span><b>${fmtH(h) || "0:00"}</b> из ${fmtH(wh)}</span></div>
+    <div class="bar ${over ? "over" : ""}"><span style="width:${pct}%"></span></div>
+    <div class="load-note ${over ? "over" : ""}">${over ? `На ${fmtH(h - wh)} больше рабочего дня — часть задач лучше перенести`
+      : h ? `Свободно ещё ${fmtH(wh - h)}` : (tod.length + late.length ? "У задач на сегодня нет оценки в часах" : "На сегодня задач нет")}${late.length && h ? " (с учётом просроченных)" : ""}</div>` : "";
+
+  const nb = (v, icon, label, key) =>
+    `<button class="${S.view === v ? "on" : ""}" data-view="${v}">${ic(icon, 17)}<span>${label}</span><kbd>${key}</kbd></button>`;
+  $("#nav").innerHTML = "";
+
+  const name = S.user ? myName() : (S.cfg?.configured ? "Загрузка…" : "Не подключено");
+  let sub;
+  if (S.error) sub = `<div class="foot-sub err" title="${esc(S.error)}">Ошибка обновления</div>`;
+  else if (S.loading) sub = `<div class="foot-sub">Обновляю…</div>`;
+  else if (S.fetchedAt) sub = `<div class="foot-sub" title="Обновлено в ${S.fetchedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}">${DEMO ? "Демо-режим · " : ""}обновлено ${ago(S.fetchedAt)}</div>`;
+  else sub = `<div class="foot-sub">${DEMO ? "Демо-режим" : "—"}</div>`;
+  const themeIc = S.theme === "light" ? "sun" : S.theme === "dark" ? "moon" : "auto";
+  const themeT = S.theme === "light" ? "Светлая тема" : S.theme === "dark" ? "Тёмная тема" : "Тема как в системе";
+  $("#foot").innerHTML = `
+    ${avatar(S.user ? myName() : "?", "lg")}
+    <div class="foot-who"><div class="foot-name">${esc(name)}</div>${sub}</div>
+    <button class="btn ghost sm icon" data-act="theme" title="${themeT}">${ic(themeIc, 16)}</button>
+    <button class="btn ghost sm icon" data-act="settings" title="Настройки">${ic("gear", 16)}</button>`;
+}
+
+function ago(d) {
+  const m = Math.floor((Date.now() - d) / 60000);
+  if (m < 1) return "только что";
+  if (m < 60) return `${m} мин назад`;
+  return `в ${d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}`;
+}
+
+function renderTop() {
+  const titles = {
+    plan: ["План по дням", "Что закрыть сегодня, завтра и дальше"],
+    week: ["Неделя", "Задачи по дням недели"],
+    month: ["Месяц", "Сроки задач в календаре"],
+  };
+  const [h, p] = titles[S.view];
+  $("#vTitle").textContent = whoName();
+  $("#whoChip").innerHTML = S.who === "me" ? "" : S.who === "team" ? `<span class="av team">${ic("users", 14)}</span>` : avatar(whoName());
+  $("#vSub").textContent = S.fetchedAt ? `${h} · ${S.q || S.project ? "найдено" : "открытых задач"}: ${visible().length}` : p;
+  $("#viewSeg").innerHTML = [["plan", "list", "План", "1"], ["week", "week", "Неделя", "2"], ["month", "cal", "Месяц", "3"]].map(([v, icon, label, key]) =>
+    `<button role="tab" aria-selected="${S.view === v}" class="${S.view === v ? "on" : ""}" data-view="${v}" title="${label} (${key})">${ic(icon, 15)}${label}</button>`).join("");
+
+  const projects = [...new Set(baseList().map(i => i.project))].sort((a, b) => a.localeCompare(b, "ru"));
+  if (S.project && !projects.includes(S.project)) S.project = "";
+  const sel = $("#proj");
+  sel.innerHTML = `<option value="">Все проекты</option>` + projects.map(p => `<option ${p === S.project ? "selected" : ""}>${esc(p)}</option>`).join("");
+  sel.style.display = projects.length > 1 ? "" : "none";
+  renderRefresh();
+}
+
+function renderRefresh() {
+  const b = $("#refreshBtn");
+  b.innerHTML = ic("refresh", 17);
+  b.classList.toggle("spin", S.loading);
+  b.disabled = !S.cfg?.configured;
+}
+
+function renderBanner() {
+  const el = $("#banner");
+  if (S.error && S.fetchedAt) {
+    el.innerHTML = `${ic("alert", 18)}<span>${esc(S.error)} · показаны данные на ${S.fetchedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}</span>
+      <button class="btn sm" data-act="refresh">Повторить</button>`;
+  } else el.innerHTML = "";
+}
+
+function updateTitle() {
+  const base = "Redmine календарь";
+  if (S.timer) { document.title = `⏱ ${fmtClock(elapsed())} · #${S.timer.issue_id} — ${base}`; return; }
+  const t = S.today;
+  const tod = S.mine.filter(i => same(i._due, t)).length;
+  const late = S.mine.filter(isLate).length;
+  document.title = S.fetchedAt ? `Сегодня ${tod}${late ? `, просрочено ${late}` : ""} — ${base}` : base;
+}
+
+/* ---------------------------------------------------------------- render: views */
+function renderView() {
+  const v = $("#view");
+  const keep = v.scrollTop;
+  v.className = "view" + (S.view !== "plan" && S.fetchedAt ? " fill" : "");
+  if (!S.cfg) v.innerHTML = skeleton();
+  else if (!S.cfg.configured) v.innerHTML = stateHTML("plug", "", "Подключим Redmine", "Укажи адрес Redmine и свой API-ключ — дальше программа сама будет подтягивать задачи и раскладывать их по срокам.", `<button class="btn primary" data-act="settings">${ic("gear", 16)}Открыть настройки</button>`);
+  else if (!S.fetchedAt) v.innerHTML = S.error
+    ? stateHTML("alert", "red", "Не получилось загрузить задачи", esc(S.error), `<button class="btn primary" data-act="refresh">${ic("refresh", 16)}Повторить</button> <button class="btn" data-act="settings">Настройки</button>`)
+    : skeleton();
+  else if (!baseList().length) v.innerHTML = S.who === "me"
+    ? stateHTML("party", "green", "Открытых задач нет", "На тебе сейчас ничего не висит. Можно выдохнуть.", "")
+    : stateHTML("party", "green", "Открытых задач нет", `У ${S.who === "team" ? "команды" : "сотрудника"} сейчас нет открытых задач.`, "");
+  else v.innerHTML = S.view === "plan" ? planHTML() : S.view === "week" ? weekHTML() : monthHTML();
+  if (S.view === "plan") v.scrollTop = keep;
+}
+
+function stateHTML(icon, tone, title, text, actions) {
+  return `<div class="state"><div class="state-ic ${tone}">${ic(icon, 30, 1.8)}</div><h3>${title}</h3><p>${text}</p>${actions}</div>`;
+}
+
+function skeleton() {
+  const row = w => `<div class="skel-row"><div class="sk" style="width:60px"></div><div style="flex:1"><div class="sk" style="width:${w}%;margin-bottom:8px"></div><div class="sk" style="width:${w / 3}%;height:9px"></div></div><div class="sk" style="width:90px"></div></div>`;
+  return `<div class="plan"><div class="sk" style="width:140px;height:14px;margin:12px 4px 14px"></div><div class="skel">${row(62) + row(48) + row(70)}</div>
+    <div class="sk" style="width:110px;height:14px;margin:0 4px 14px"></div><div class="skel">${row(55) + row(40)}</div></div>`;
+}
+
+const showAssignee = () => S.who === "team";
+
+function rowHTML(i, t) {
+  const d = dueInfo(i, t);
+  const who = showAssignee() && i.assignee ? `${avatar(i.assignee.name, "sm")}<b>${esc(i.assignee.name)}</b> · ` : "";
+  const running = S.timer && S.timer.issue_id === i.id;
+  return `<div class="row p${prio(i)} ${isDone(i) ? "done" : ""}" data-id="${i.id}" tabindex="0" draggable="true">
+    <span class="pbar"></span>
+    <span class="rid">#${i.id}</span>
+    <div style="min-width:0"><div class="rsubj" title="${esc(i.subject)}">${running ? `<span style="color:#12a150">${ic("play", 11)}</span> ` : ""}${esc(i.subject)}</div>
+      <div class="rmeta">${who}${showAssignee() ? esc(i.project) : `<b>${esc(i.project)}</b>`} · ${esc(i.tracker)}${i.priority ? " · " + esc(i.priority) : ""}</div></div>
+    <span class="pill status">${esc(i.status)}</span>
+    <span class="due ${d.cls}">${d.text}</span>
+    <span class="rest">${fmtH(i.est)}</span>
+    <span class="row-acts">
+      <button class="ra ${running ? "on" : "go"}" data-act="${running ? "timer-stop" : "row-timer"}" data-issue="${i.id}" title="${running ? "Остановить таймер" : "В работу — запустить таймер"}" aria-label="${running ? "Остановить таймер" : "В работу"}">${ic(running ? "stop" : "play", 14)}</button>
+      <button class="ra" data-act="row-later" data-issue="${i.id}" title="${laterTitle(i, t)}" aria-label="${laterTitle(i, t)}">${ic("right", 16)}</button>
+      <button class="ra" data-act="open" data-issue="${i.id}" title="Открыть в Redmine" aria-label="Открыть в Redmine">${ic("ext", 15)}</button>
+    </span>
+  </div>`;
+}
+
+// «→» на строке: просроченное и сегодняшнее — на завтра, остальное — на день позже
+function laterDate(i, t) {
+  const tomorrow = addDays(t, 1);
+  return i._due && i._due >= tomorrow ? addDays(i._due, 1) : tomorrow;
+}
+const laterTitle = (i, t) => `Перенести на ${same(laterDate(i, t), addDays(t, 1)) ? "завтра" : shortDay(laterDate(i, t))}`;
+
+function planHTML() {
+  const t = S.today;
+  const groups = planGroups(visible(), t);
+  if (!groups.some(g => g.items.length)) return stateHTML("search", "", "Ничего не нашлось", "Под фильтр не попала ни одна задача.", `<button class="btn" data-act="reset-filter">Сбросить фильтр</button>`);
+  return `<div class="plan">` + groups.map(g => {
+    const closed = S.collapsed[g.key];
+    const h = sumH(g.items);
+    const body = g.items.length ? g.items.map(i => rowHTML(i, t)).join("")
+      : `<div class="empty-row"><span class="ok">${ic("check", 14, 2.5)}</span>${g.key === "today" ? "На сегодня задач со сроком нет" : "На завтра задач со сроком нет"}</div>`;
+    return `<section class="grp tone-${g.tone} ${closed ? "closed" : ""}" id="g-${g.key}">
+      <button class="grp-head" data-toggle="${g.key}"${g.drop !== undefined ? ` data-drop="${g.drop}"` : ""}>
+        <span class="grp-dot"></span><span class="grp-title">${g.title}</span>
+        ${g.note ? `<span class="grp-note">${g.note}</span>` : ""}
+        <span class="grp-count">${g.items.length}</span>
+        <span class="grp-hours">${h ? ic("clock", 13) + fmtH(h) : ""}</span>
+        <span class="grp-chev">${ic("down", 16)}</span>
+      </button>
+      <div class="grp-body">${body}</div>
+    </section>`;
+  }).join("") + `</div>`;
+}
+
+function cardHTML(i, t) {
+  const late = isLate(i);
+  const tail = late ? `<span class="est" style="color:var(--red-text)">${dueInfo(i, t).text}</span>` : i.est ? `<span class="est">${fmtH(i.est)}</span>` : "";
+  return `<div class="card p${prio(i)} ${late ? "late" : ""} ${isDone(i) ? "done" : ""}" data-id="${i.id}" draggable="true" title="${esc(i.subject)}">
+    <div class="card-top"><span class="rid">#${i.id}</span><span class="pill sm">${esc(i.status)}</span></div>
+    <div class="card-subj">${esc(i.subject)}</div>
+    <div class="card-foot"><span class="proj">${esc(i.project)}</span>${tail}${showAssignee() && i.assignee ? avatar(i.assignee.name, "sm") : ""}</div>
+  </div>`;
+}
+
+function weekHTML() {
+  const t = S.today, list = visible(), ws = S.weekStart, we = addDays(ws, 6);
+  const range = ws.getMonth() === we.getMonth()
+    ? `${ws.getDate()} – ${we.getDate()} ${MON_GEN[we.getMonth()]}`
+    : `${longDate(ws)} – ${longDate(we)}`;
+  const inWeek = list.filter(i => i._due && i._due >= ws && i._due <= we);
+  const isCur = same(ws, mondayOf(t));
+  const tail = isCur ? list.filter(i => i._due && i._due < ws && !isDone(i)).sort(byDue) : [];
+  const nodue = list.filter(i => !i._due).length;
+
+  let html = `<div class="vbar">
+    <div class="seg"><button data-act="prev" title="Назад (←)">${ic("left", 16)}</button><button data-act="next" title="Вперёд (→)">${ic("right", 16)}</button></div>
+    <h2>${range}</h2>
+    ${isCur ? "" : `<button class="btn sm" data-act="now">Эта неделя</button>`}
+    <span class="vbar-note">${tasksWord(inWeek.length)}${sumH(inWeek) ? " · " + fmtH(sumH(inWeek)) : ""}${nodue ? ` · без срока: ${nodue}` : ""}</span>
+  </div>`;
+  if (tail.length) {
+    html += `<div class="strip"><div class="strip-label"><b>${tail.length}</b>${plural(tail.length, "хвост", "хвоста", "хвостов")} с прошлых недель</div>${tail.map(i => cardHTML(i, t)).join("")}</div>`;
+  }
+  html += `<div class="week">`;
+  for (let n = 0; n < 7; n++) {
+    const d = addDays(ws, n);
+    const items = list.filter(i => same(i._due, d)).sort(byPrio);
+    const cls = [same(d, t) ? "today" : "", n >= 5 ? "weekend" : "", d < t ? "past" : ""].join(" ");
+    html += `<div class="col ${cls}" data-drop="${ymd(d)}">
+      <div class="col-head"><span class="col-wd">${WDS[n]}</span><span class="col-day">${d.getDate()}</span><span class="col-h">${fmtH(sumH(items))}</span></div>
+      <div class="col-body">${items.length ? items.map(i => cardHTML(i, t)).join("") : `<div class="col-empty">${same(d, t) ? "свободно" : "—"}</div>`}</div>
+    </div>`;
+  }
+  return html + `</div>`;
+}
+
+function monthHTML() {
+  const t = S.today, list = visible(), m = S.month;
+  const start = mondayOf(m);
+  const byDay = {};
+  for (const i of list) if (i._due) (byDay[ymd(i._due)] ||= []).push(i);
+  const inMonth = list.filter(i => i._due && i._due.getMonth() === m.getMonth() && i._due.getFullYear() === m.getFullYear());
+  const isCur = m.getMonth() === t.getMonth() && m.getFullYear() === t.getFullYear();
+
+  let html = `<div class="vbar">
+    <div class="seg"><button data-act="prev" title="Назад (←)">${ic("left", 16)}</button><button data-act="next" title="Вперёд (→)">${ic("right", 16)}</button></div>
+    <h2>${cap(MON[m.getMonth()])} ${m.getFullYear()}</h2>
+    ${isCur ? "" : `<button class="btn sm" data-act="now">Сегодня</button>`}
+    <span class="vbar-note">за месяц: ${tasksWord(inMonth.length)}${sumH(inMonth) ? " · " + fmtH(sumH(inMonth)) : ""}</span>
+  </div><div class="month"><div class="mgrid">`;
+  html += WDS.map((w, n) => `<div class="mh ${n >= 5 ? "we" : ""}">${w}</div>`).join("");
+  for (let n = 0; n < 42; n++) {
+    const d = addDays(start, n);
+    const items = (byDay[ymd(d)] || []).sort(byPrio);
+    const late = d < t && items.some(i => !isDone(i));
+    const cls = [d.getMonth() !== m.getMonth() ? "out" : "", wd(d) >= 5 ? "we" : "", same(d, t) ? "today" : "", same(d, S.selDay) ? "sel" : "", late ? "late" : ""].join(" ");
+    const max = 3;
+    html += `<div class="mc ${cls}" data-day="${ymd(d)}" data-drop="${ymd(d)}">
+      <div class="mc-top"><span class="mc-num">${d.getDate()}</span><span class="mc-h">${fmtH(sumH(items))}</span>${items.length ? `<span class="mc-cnt ${late ? "late" : ""}">${items.length}</span>` : ""}</div>
+      ${items.slice(0, max).map(i => `<div class="chip p${prio(i)} ${d < t && !isDone(i) ? "late" : ""} ${isDone(i) ? "done" : ""}" data-id="${i.id}" draggable="true" title="#${i.id} ${esc(i.subject)}">${esc(i.subject)}</div>`).join("")}
+      ${items.length > max ? `<div class="mc-more">ещё ${items.length - max}</div>` : ""}
+    </div>`;
+  }
+  const sd = S.selDay;
+  const sItems = (byDay[ymd(sd)] || []).sort(byPrio);
+  const sLate = sd < t && sItems.some(i => !isDone(i));
+  html += `</div><aside class="dayp">
+    <div class="dayp-head">
+      <div class="dayp-wd">${same(sd, t) ? "сегодня · " : same(sd, addDays(t, 1)) ? "завтра · " : ""}${WD[wd(sd)]}</div>
+      <div class="dayp-date">${longDate(sd)}${sd.getFullYear() !== t.getFullYear() ? " " + sd.getFullYear() : ""}</div>
+      <div class="dayp-sum ${sLate ? "late" : ""}">${sItems.length ? tasksWord(sItems.length) + (sumH(sItems) ? " · " + fmtH(sumH(sItems)) : "") + (sLate ? " · срок прошёл" : "") : "Задач со сроком нет"}</div>
+    </div>
+    <div class="dayp-body">${sItems.length ? sItems.map(i => cardHTML(i, t)).join("") : `<div class="dayp-empty">${ic("calcheck", 28, 1.6)}<br>Свободный день</div>`}</div>
+  </aside></div>`;
+  return html;
+}
+
+/* ---------------------------------------------------------------- drawer: задача */
+const findIssue = id => S.mine.find(i => i.id === id) || S.team.find(i => i.id === id) || null;
+
+async function openIssue(id, refetch, nav) {
+  if (S.openId !== id && isDirty() && !confirm("Есть несохранённые изменения в открытой задаче. Закрыть её без сохранения?")) return;
+  if (S.openId !== id) {
+    if (nav === "child" && S.openId) S.drawerStack.push(S.openId);  // пришли из другой задачи — можно вернуться
+    else if (nav !== "back") S.drawerStack = [];
+  }
+  const switching = S.openId !== id;
+  S.openId = id;
+  document.body.classList.add("drawer-on");
+  $("#drawer").setAttribute("aria-hidden", "false");
+  if (switching || !S.details[id]) renderDrawer();
+  if (!S.details[id] || refetch) {
+    try {
+      S.details[id] = await api(`/api/issue?id=${id}`);
+    } catch (e) {
+      if (!S.details[id] || S.details[id]._error) S.details[id] = { _error: e.message };
+      else toast(e.message, "err");
+    }
+    if (S.openId === id) renderDrawer();
+  }
+}
+
+function closeDrawer(force) {
+  if (!force && isDirty() && !confirm("Есть несохранённые изменения. Закрыть без сохранения?")) return;
+  S.openId = null;
+  S.drawerStack = [];
+  document.body.classList.remove("drawer-on");
+  $("#drawer").setAttribute("aria-hidden", "true");
+}
+
+function drawerActions(id) {
+  const running = S.timer && S.timer.issue_id === id;
+  const other = S.timer && !running;
+  return `${running
+      ? `<button class="btn danger" data-act="timer-stop">${ic("stop", 14)}Стоп · <span class="mono" data-timer>${fmtClock(elapsed())}</span></button>`
+      : `<button class="btn go" data-act="timer-start" data-issue="${id}" title="${other ? `Сейчас идёт таймер по задаче #${S.timer.issue_id}` : "Запустить таймер и перевести задачу в статус «В работе»"}">${ic("play", 14)}В работу</button>`}
+    <button class="btn" data-act="log-time" data-issue="${id}">${ic("clock", 15)}Записать время</button>
+    <button class="btn" data-act="new-sub" data-issue="${id}" title="Создать подзадачу">${ic("plus", 15)}Подзадача</button>
+    <span class="grow"></span>
+    <button class="btn icon" data-act="copy" data-issue="${id}" title="Скопировать ссылку">${ic("copy", 16)}</button>
+    <button class="btn" data-act="open" data-issue="${id}">${ic("ext", 15)}В Redmine</button>`;
+}
+
+const DONE = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
+function editFormHTML(det) {
+  const o = det.options;
+  const sel = (name, opts, cur, empty) =>
+    `<select class="input" name="${name}">${empty ? `<option value="">${empty}</option>` : ""}${opts.map(x =>
+      `<option value="${x.id}" ${String(x.id) === String(cur ?? "") ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select>`;
+  const done = DONE.includes(det.done) ? DONE : [...DONE, det.done].sort((a, b) => a - b);
+  return `<form id="edForm" class="edit" autocomplete="off">
+    <div class="fld wide"><span>Проект</span>
+      <div class="combo">
+        <input class="input" id="projInput" value="${esc(det.project)}" data-name="${esc(det.project)}" spellcheck="false" placeholder="Начни вводить название проекта">
+        <input type="hidden" name="project_id" value="${det.project_id}">
+        <div class="combo-list" id="projList"></div>
+      </div></div>
+    <div class="form-grid">
+      <label class="fld"><span>Исполнитель</span><select class="input" name="assigned_to_id">${assigneeOptions(o.assignees, det.assignee?.id, det.assignee?.name)}</select></label>
+      <label class="fld"><span>Статус</span>${sel("status_id", o.statuses, det.status_id)}</label>
+      <label class="fld"><span>Трекер</span>${sel("tracker_id", o.trackers, det.tracker_id)}</label>
+      <label class="fld"><span>Срок</span><input class="input" type="date" name="due_date" value="${det.due || ""}"></label>
+      <label class="fld"><span>Готовность</span>${sel("done_ratio", done.map(v => ({ id: v, name: `${v} %` })), det.done ?? 0)}</label>
+    </div>
+    <div id="cfBox"></div>
+    <div class="ed-note" id="edNote"></div>
+    <label class="fld"><span>Комментарий</span><textarea class="input" name="notes" rows="3" placeholder="Написать комментарий… (Ctrl+Enter — сохранить)"></textarea></label>
+    <div class="ed-actions">
+      <span class="ed-hint" id="edHint">Измени поля или напиши комментарий</span>
+      <button type="button" class="btn ghost sm" data-act="ed-reset" id="edReset" disabled>Сбросить</button>
+      <button type="submit" class="btn primary sm" id="edSave" disabled>Сохранить в Redmine</button>
+    </div>
+  </form>`;
+}
+
+function assigneeOptions(members, cur, curName) {
+  const teamIds = new Set(team().map(m => m.id));
+  const opt = (id, name, extra = "") =>
+    `<option value="${id}" ${String(id) === String(cur ?? "") ? "selected" : ""}>${esc(name)}${extra}</option>`;
+  const known = new Set([...teamIds, ...members.map(m => m.id)]);
+  let html = `<option value="" ${cur ? "" : "selected"}>— не назначена —</option>`;
+  if (cur && !known.has(+cur)) html += opt(cur, curName || `#${cur}`);
+  if (teamIds.size) html += `<optgroup label="Моя команда">${team().map(m => opt(m.id, m.name, m.project ? `  →  ${m.project.name}` : "")).join("")}</optgroup>`;
+  const others = members.filter(m => !teamIds.has(m.id));
+  if (others.length) html += `<optgroup label="Участники проекта">${others.map(m => opt(m.id, m.name)).join("")}</optgroup>`;
+  return html;
+}
+
+const optName = sel => (sel.selectedOptions[0]?.textContent || "").split("  →  ")[0];
+
+async function ensureProjects() {
+  if (!S.projects) {
+    try { S.projects = (await api("/api/projects")).projects; }
+    catch (e) { toast(`Список проектов не загрузился: ${e.message}`, "err"); return []; }
+  }
+  return S.projects;
+}
+
+function attachProjectPicker(inp, list, current, onPick) {
+  let active = 0;
+  const items = () => [...list.querySelectorAll("[data-pid]")];
+  const show = async () => {
+    const all = await ensureProjects();
+    const q = inp.dataset.typed ? inp.value.trim().toLowerCase() : "";
+    const found = (q ? all.filter(p => p.name.toLowerCase().includes(q)) : all).slice(0, 60);
+    const homes = new Map(team().filter(m => m.project).map(m => [m.project.id, m.name]));
+    active = 0;
+    list.innerHTML = found.length ? found.map((p, n) =>
+      `<div class="combo-item ${String(p.id) === current() ? "on" : ""} ${n === 0 ? "act" : ""}" data-pid="${p.id}" title="${esc(p.name)}">${esc(p.name)}${homes.has(p.id) ? `<small>проект: ${esc(homes.get(p.id))}</small>` : ""}</div>`).join("")
+      : `<div class="combo-empty">Ничего не нашлось</div>`;
+    list.classList.add("open");
+  };
+  const pick = el => {
+    if (!el) return;
+    onPick(+el.dataset.pid, el.getAttribute("title"));
+    inp.blur();
+  };
+  inp.addEventListener("focus", () => { inp.dataset.typed = ""; inp.select(); show(); });
+  inp.addEventListener("input", () => { inp.dataset.typed = "1"; show(); });
+  inp.addEventListener("blur", () => setTimeout(() => { list.classList.remove("open"); inp.value = inp.dataset.name; }, 150));
+  inp.addEventListener("keydown", e => {
+    const its = items();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      active = Math.max(0, Math.min(its.length - 1, active + (e.key === "ArrowDown" ? 1 : -1)));
+      its.forEach((el, n) => el.classList.toggle("act", n === active));
+      its[active]?.scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      pick(its[active]);
+    } else if (e.key === "Escape") {
+      e.stopPropagation();
+      inp.blur();
+    }
+  });
+  list.addEventListener("mousedown", e => { e.preventDefault(); pick(e.target.closest("[data-pid]")); });
+}
+
+function bindProjectPicker(f) {
+  attachProjectPicker($("#projInput"), $("#projList"), () => f.project_id.value, (pid, name) => setProject(pid, "manual", name));
+
+  f.tracker_id.addEventListener("change", () => refreshFields());
+  f.assigned_to_id.addEventListener("change", () => {
+    const m = team().find(x => String(x.id) === f.assigned_to_id.value);
+    const det = S.details[S.openId];
+    if (m?.project && String(m.project.id) !== f.project_id.value) setProject(m.project.id, "auto", m.project.name);
+    else if (!m && f.dataset.projAuto && String(det.project_id) !== f.project_id.value) setProject(det.project_id, "revert", det.project);
+  });
+}
+
+async function setProject(pid, reason, name) {
+  const f = $("#edForm"), det = S.details[S.openId];
+  if (!f || !det) return;
+  const inp = $("#projInput");
+  f.project_id.value = pid;
+  inp.value = inp.dataset.name = name;
+  f.dataset.projAuto = reason === "auto" ? "1" : "";
+  let opts;
+  if (pid === det.project_id) opts = { trackers: det.options.trackers, assignees: det.options.assignees };
+  else {
+    try { opts = (S.projOpts[pid] ||= await api(`/api/project?id=${pid}`)); }
+    catch (e) { toast(e.message, "err"); return; }
+  }
+  if ($("#edForm") !== f) return;  // пока грузили, открыли другую задачу
+  const notes = [];
+  if (reason === "auto") notes.push(`Задача переедет в проект сотрудника «${name}»`);
+  const curTr = f.tracker_id.value;
+  f.tracker_id.innerHTML = opts.trackers.map(t => `<option value="${t.id}" ${String(t.id) === curTr ? "selected" : ""}>${esc(t.name)}</option>`).join("");
+  if (opts.trackers.length && !opts.trackers.some(t => String(t.id) === curTr)) {
+    notes.push(`Трекера «${det.tracker}» в этом проекте нет — будет «${f.tracker_id.selectedOptions[0]?.textContent}»`);
+  }
+  const curA = f.assigned_to_id.value, curName = optName(f.assigned_to_id);
+  f.assigned_to_id.innerHTML = assigneeOptions(opts.assignees, curA, curName);
+  if (curA && !team().some(m => String(m.id) === curA) && !opts.assignees.some(m => String(m.id) === curA)) {
+    notes.push(`${curName} не участник этого проекта — Redmine может не принять такого исполнителя`);
+  }
+  $("#edNote").textContent = notes.join(". ");
+  edCheck();
+  refreshFields();
+}
+
+let cfSeq = 0;
+
+async function refreshFields(missing) {
+  const f = $("#edForm"), det = S.details[S.openId];
+  if (!f || !det || det._error) return;
+  if (missing) f._missing = missing;
+  const pid = +f.project_id.value, tr = +f.tracker_id.value;
+  const seq = ++cfSeq;
+  let fields = [];
+  if (pid !== det.project_id || tr !== det.tracker_id) {
+    const key = `${pid}:${tr}`;
+    try { fields = (S.fieldsCache[key] ||= (await api(`/api/fields?project=${pid}&tracker=${tr}`)).fields).filter(x => x.likely_required); }
+    catch { fields = []; }
+  }
+  if (seq !== cfSeq || $("#edForm") !== f) return;
+  for (const m of f._missing || []) if (!fields.some(x => x.id === m.id)) fields.push(m);
+  renderCfBox(fields);
+  edCheck();
+}
+
+const cfOld = (det, id) => {
+  const v = (det.custom_fields || []).find(c => c.id === id)?.value;
+  return Array.isArray(v) ? v[0] || "" : v || "";
+};
+
+function renderCfBox(fields) {
+  const box = $("#cfBox"), det = S.details[S.openId];
+  const typed = {};
+  box.querySelectorAll("[data-cf]").forEach(el => { typed[el.dataset.cf] = el.value; });
+  const input = x => cfFieldHTML(x, typed[x.id] ?? cfOld(det, x.id));
+  box.innerHTML = fields.length ? `<div class="cf-h">Поля проекта</div><div class="form-grid">${fields.map(input).join("")}</div>` : "";
+}
+
+async function ensureTeamProjects() {
+  const missing = team().filter(m => !m.project);
+  if (!missing.length || DEMO) return;
+  for (const m of missing) {
+    try { m.project = (await api(`/api/team/home?id=${m.id}&name=${encodeURIComponent(m.name)}`)).project || undefined; }
+    catch { /* не нашли — не страшно */ }
+  }
+  try { S.cfg = (await api("/api/config", { team: team() })).state; } catch { /* сохраним в другой раз */ }
+}
+
+function subtasksHTML(det) {
+  const ch = det.children || [];
+  if (!ch.length) return "";
+  const t = S.today;
+  const closed = ch.filter(c => c.closed === true).length;
+  const hidden = ch.filter(c => c.closed === null).length;
+  const pct = Math.round(closed / ch.length * 100);
+  const row = c => {
+    const access = c.closed !== null;
+    const due = parseD(c.due);
+    const late = due && due < t && !c.closed;
+    const pill = !access ? `<span class="pill sm">нет доступа</span>`
+      : `<span class="pill sm ${c.closed || isDone(c) ? "ok" : ""}">${esc(c.status)}</span>`;
+    return `<div class="sub ${c.closed ? "closed" : ""} ${access ? "" : "noaccess"}" ${access ? `data-sub="${c.id}"` : `title="Задача в проекте, к которому у тебя нет доступа"`} style="--d:${c.depth}">
+      ${pill}<span class="rid">#${c.id}</span>
+      <span class="sub-s" title="${esc(c.subject)}">${esc(c.subject)}</span>
+      ${c.assignee ? avatar(c.assignee.name, "sm") : ""}
+      ${due ? `<span class="sub-d ${late ? "late" : ""}">${shortDay(due)}</span>` : ""}
+    </div>`;
+  };
+  const open = ch.length - closed - hidden;
+  return `<div class="sec-h">Подзадачи · ${ch.length}</div>
+    <div class="sub-more">
+      <div class="prog"><span>Закрыто ${closed} из ${ch.length}</span><div class="bar"><span style="width:${pct}%"></span></div><b>${pct}%</b></div>
+      ${closed ? `<button class="link" data-act="subs-toggle">Показать закрытые</button>` : ""}
+    </div>
+    <div class="subs ${closed ? "hide-closed" : ""}" id="subs">${ch.map(row).join("")}</div>
+    ${!open && !hidden && closed ? `<div class="muted-box">Все подзадачи закрыты</div>` : ""}`;
+}
+
+function historyHTML(det) {
+  const js = (det.journals || []).slice().reverse();
+  if (!js.length) return `<div class="sec-h">История</div><div class="muted-box">Комментариев пока нет</div>`;
+  return `<div class="sec-h">История · ${js.length}</div><div class="hist">${js.map(j => `
+    <div class="jr">${avatar(j.user, "sm")}<div class="jr-b">
+      <div class="jr-h"><b>${esc(j.user)}</b><span>${fmtDT(j.created)}</span>${j.private ? `<span class="pill sm">приватный</span>` : ""}</div>
+      ${j.changes.length ? `<ul class="jr-ch">${j.changes.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+      ${j.notes ? `<div class="jr-n rich">${textile(j.notes, det.attachments)}</div>` : ""}
+    </div></div>`).join("")}</div>`;
+}
+
+function renderDrawer() {
+  const id = S.openId;
+  if (!id) return;
+  const det = S.details[id];
+  const ok = det && !det._error;
+  const i = { ...(findIssue(id) || {}), ...(ok ? det : {}) };
+  i._due = parseD(i.due);
+  const t = S.today;
+  const sd = s => { const x = parseD(s); return x ? `${longDate(x)}${x.getFullYear() !== t.getFullYear() ? " " + x.getFullYear() : ""}` : "—"; };
+  const fact = (k, v, cls = "") => `<div><dt>${k}</dt><dd class="${cls}">${v}</dd></div>`;
+  const skel = `<div class="edit"><div class="sk" style="width:70%;margin-bottom:12px"></div><div class="sk" style="width:50%;margin-bottom:12px"></div><div class="sk" style="width:60%"></div></div>`;
+  const d = dueInfo(i, t);
+
+  $("#drawer").innerHTML = `
+    <div class="dr-head">${S.drawerStack.length ? `<button class="btn ghost sm icon" data-act="drawer-back" title="Назад к #${S.drawerStack[S.drawerStack.length - 1]}">${ic("left", 18)}</button>` : ""}<span class="rid">#${id}</span>${i.tracker ? `<span class="pill sm">${esc(i.tracker)}</span>` : ""}
+      <button class="btn ghost sm icon" data-act="close-drawer" title="Закрыть (Esc)">${ic("x", 18)}</button></div>
+    <div class="dr-body">
+      <h2>${esc(i.subject || "")}</h2>
+      <div class="dr-pills">
+        <span class="pill">${esc(i.status || "")}</span>
+        <span class="pill p${prio(i)}"><span class="dot"></span>${esc(i.priority || "")}</span>
+        <span class="pill">${esc(i.project || "")}</span>
+        ${i.assignee ? `<span class="pill">${avatar(i.assignee.name, "sm")}${esc(i.assignee.name)}</span>` : `<span class="pill">не назначена</span>`}
+      </div>
+      ${ok && det.parent ? `<div class="parent-link" data-sub="${det.parent.id}" title="Открыть родительскую задачу">${ic("left", 14)}<span>Родительская: <b>#${det.parent.id}</b> ${esc(det.parent.subject)}</span></div>` : ""}
+      <div class="dr-act" id="drAct">${drawerActions(id)}</div>
+      <div class="qdue"><span>Срок:</span>${dockTargets(i).map(x => `<button class="qchip" data-act="due-quick" data-date="${x.date}">${x.label}${x.d && !["Сегодня", "Завтра"].includes(x.label) ? ` <small>${shortDay(x.d)}</small>` : ""}</button>`).join("")}</div>
+      ${!det ? skel : det._error ? `<div class="desc muted">Не удалось загрузить задачу: ${esc(det._error)}</div>` : editFormHTML(det)}
+      <dl class="facts">
+        ${fact("Срок", i._due ? `${sd(i.due)} · ${d.text}` : "без срока", d.cls)}
+        ${fact("Начало", sd(i.start))}
+        ${fact("Оценка", fmtH(i.est) || "—")}
+        ${fact("Затрачено", ok ? (fmtH(i.spent) || "0:00") : "…")}
+        ${fact("Автор", ok ? esc(i.author || "—") : "…")}
+        ${fact("Обновлена", fmtDT(i.updated))}
+      </dl>
+      ${ok ? subtasksHTML(det) : ""}
+      <div class="sec-h">Описание</div>
+      ${!det ? `<div class="desc"><div class="sk" style="width:80%;margin-bottom:10px"></div><div class="sk" style="width:60%"></div></div>`
+        : ok ? (i.description ? `<div class="desc rich">${textile(i.description, det.attachments)}</div>` : `<div class="desc muted">Описания нет</div>`) : ""}
+      ${ok ? filesHTML(det) : ""}
+      ${ok ? historyHTML(det) : ""}
+    </div>`;
+
+  const f = $("#edForm");
+  if (f) {
+    bindProjectPicker(f);
+    f.addEventListener("input", edCheck);
+    f.addEventListener("change", edCheck);
+    f.addEventListener("submit", saveEdit);
+    f.notes.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEdit(e); } });
+  }
+}
+
+const ED_LABELS = { custom_fields: "поля проекта", project_id: "проект", status_id: "статус", tracker_id: "трекер", assigned_to_id: "исполнитель", due_date: "срок", done_ratio: "готовность", notes: "комментарий" };
+
+function edDiff() {
+  const f = $("#edForm"), det = S.details[S.openId];
+  if (!f || !det || det._error) return {};
+  const d = {};
+  if (f.project_id.value !== String(det.project_id)) d.project_id = +f.project_id.value;
+  if (f.status_id.value !== String(det.status_id)) d.status_id = +f.status_id.value;
+  if (f.tracker_id.value !== String(det.tracker_id)) d.tracker_id = +f.tracker_id.value;
+  if (f.assigned_to_id.value !== (det.assignee ? String(det.assignee.id) : "")) d.assigned_to_id = f.assigned_to_id.value;
+  if (f.due_date.value !== (det.due || "")) d.due_date = f.due_date.value;
+  if (f.done_ratio.value !== String(det.done ?? 0)) d.done_ratio = +f.done_ratio.value;
+  if (f.notes.value.trim()) d.notes = f.notes.value.trim();
+  const cfs = [];
+  f.querySelectorAll("#cfBox [data-cf]").forEach(el => {
+    const id = +el.dataset.cf, v = el.value.trim();
+    el.classList.toggle("need", !!el.dataset.req && !v);
+    if (v && v !== cfOld(det, id)) cfs.push({ id, value: el.dataset.multiple ? [v] : v });
+  });
+  if (cfs.length) d.custom_fields = cfs;
+  return d;
+}
+const isDirty = () => Object.keys(edDiff()).length > 0;
+
+function edCheck() {
+  const keys = Object.keys(edDiff());
+  const hint = $("#edHint");
+  hint.textContent = keys.length ? `Изменено: ${keys.map(k => ED_LABELS[k]).join(", ")}` : "Измени поля или напиши комментарий";
+  hint.classList.toggle("dirty", keys.length > 0);
+  $("#edSave").disabled = !keys.length;
+  $("#edReset").disabled = !keys.length;
+}
+
+async function saveEdit(ev) {
+  ev.preventDefault();
+  const d = edDiff();
+  if (!Object.keys(d).length) return;
+  const id = S.openId;
+  const btn = $("#edSave");
+  btn.disabled = true;
+  btn.textContent = "Сохраняю…";
+  const f = $("#edForm");
+  const who = optName(f.assigned_to_id), proj = $("#projInput").dataset.name;
+  try {
+    await api("/api/issue/update", { id, ...d, context_project_id: +f.project_id.value });
+    const moved = d.project_id !== undefined, reassigned = d.assigned_to_id !== undefined;
+    let msg;
+    if (moved && reassigned) msg = d.assigned_to_id ? `#${id} переведена в проект «${proj}» на ${who}` : `#${id} переведена в проект «${proj}», исполнитель снят`;
+    else if (moved) msg = `#${id} перенесена в проект «${proj}»`;
+    else if (reassigned) msg = d.assigned_to_id ? `#${id} переназначена на ${who}` : `#${id}: исполнитель снят`;
+    else msg = Object.keys(d).length === 1 && d.notes ? "Комментарий добавлен" : "Изменения сохранены";
+    toast(msg, "ok");
+    f.reset();
+    await openIssue(id, true);
+    load(false);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = "Сохранить в Redmine";
+    const missing = e.data?.missing || [];
+    if (missing.length && $("#edForm") === f) {
+      await refreshFields(missing);
+      $("#edNote").textContent = `Redmine требует заполнить: ${missing.map(m => `«${m.name}»`).join(", ")} — выбери значение и сохрани ещё раз`;
+      f.querySelector("#cfBox .need, #cfBox [data-cf]")?.focus();
+      toast("Не хватает обязательных полей — они появились в форме", "err");
+    } else toast(e.message, "err");
+  }
+}
+
+/* ---------------------------------------------------------------- таймер и трудозатраты */
+const elapsed = () => S.timer ? Math.max(0, Math.floor((Date.now() - S.timerBase) / 1000)) : 0;
+
+function setTimer(t) {
+  S.timer = t || null;
+  S.timerBase = t ? Date.now() - t.elapsed * 1000 : 0;
+  renderTimerUI();
+}
+
+function renderTimerUI() {
+  renderHero();
+  renderMobile();
+  if (S.openId) { const a = $("#drAct"); if (a) a.innerHTML = drawerActions(S.openId); }
+  if (S.view === "plan" && S.fetchedAt) renderView();
+  updateTitle();
+}
+
+async function timerStart(id) {
+  if (S.timer && S.timer.issue_id !== id) return toast(`Сейчас идёт таймер по задаче #${S.timer.issue_id} — сначала останови его`, "err");
+  if (!S.details[id]) {
+    try { S.details[id] = await api(`/api/issue?id=${id}`); } catch { /* статус не сменим, таймер всё равно запустим */ }
+  }
+  const det = S.details[id];
+  const i = { ...(findIssue(id) || {}), ...(det && !det._error ? det : {}) };
+  const work = det?.options?.statuses?.find(s => /в\s*работе|in progress/i.test(s.name));
+  const status_id = work && work.id !== i.status_id ? work.id : null;
+  try {
+    const r = await api("/api/timer/start", { id, subject: i.subject || "", status_id });
+    setTimer(r.timer);
+    if (r.warning) toast(r.warning, "err");
+    else if (status_id) toast("Таймер запущен, статус — «В работе»", "ok");
+    else toast(work ? "Таймер запущен" : "Таймер запущен (статуса «В работе» для этой задачи нет)", "ok");
+    if (status_id && !r.warning) { openIssue(id, true); load(false); }
+  } catch (e) {
+    if (e.data?.timer) setTimer(e.data.timer);
+    toast(e.message, "err");
+  }
+}
+
+async function openTimeModal(mode, id) {
+  const issueId = mode === "timer" ? S.timer?.issue_id : id;
+  if (!issueId) return;
+  const i = findIssue(issueId) || {};
+  const subject = mode === "timer" ? S.timer.subject : i.subject;
+  showModal(`<div class="modal-head"><div class="logo green">${ic("clock", 22)}</div><div><h3>${mode === "timer" ? "Остановить таймер" : "Записать время"}</h3><p>#${issueId} ${esc(subject || "")}</p></div></div><div class="sk" style="width:60%;margin:20px 0"></div>`);
+  if (!S.details[issueId] || S.details[issueId]._error) {
+    try { S.details[issueId] = await api(`/api/issue?id=${issueId}`); } catch (e) { S.details[issueId] = { _error: e.message }; }
+  }
+  if (!document.body.classList.contains("modal-on")) return;
+  const det = S.details[issueId];
+  const acts = det?.options?.activities || [];
+  const lastAct = store.get("activity", null);
+  const actId = acts.some(a => a.id === lastAct) ? lastAct : det?.options?.default_activity;
+  const sec = mode === "timer" ? elapsed() : 0;
+  const spent = mode === "timer" ? fmtH(Math.max(1, Math.ceil(sec / 60)) / 60) : "";  // до минуты вверх
+
+  showModal(`
+    <div class="modal-head"><div class="logo green">${ic("clock", 22)}</div>
+      <div><h3>${mode === "timer" ? "Остановить таймер" : "Записать время"}</h3><p>#${issueId} ${esc(subject || "")}</p></div>
+      <button class="btn ghost sm icon" data-act="close-modal" title="Закрыть">${ic("x", 18)}</button></div>
+    ${mode === "timer" ? `<div class="elapsed"><span class="mono" data-timer>${fmtClock(sec)}</span><small>в работе с ${new Date(Date.now() - sec * 1000).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}</small></div>` : ""}
+    <form id="timeForm" autocomplete="off">
+      <div class="grid2">
+        <label class="field"><span>Время, ч:мм</span><input class="input mono" name="hours" inputmode="numeric" placeholder="0:24" value="${spent}" required>
+          <small id="hmHint">${spent ? hmHint(parseHM(spent)) : "например 0:24 или 1:24"}</small></label>
+        <label class="field"><span>Дата</span><input class="input" name="spent_on" type="date" value="${ymd(today())}" required></label>
+      </div>
+      <label class="field"><span>Деятельность</span><select class="input" name="activity_id">${acts.map(a => `<option value="${a.id}" ${a.id === actId ? "selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>
+      <label class="field"><span>Комментарий</span><input class="input" name="comments" maxlength="1000" placeholder="Что сделано (необязательно)"></label>
+      <div class="checkres" id="timeRes"></div>
+      <div class="modal-actions">
+        ${mode === "timer" ? `<button type="button" class="btn ghost danger-text" data-act="timer-discard">Сбросить без записи</button>` : ""}
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" data-act="close-modal">${mode === "timer" ? "Продолжить работу" : "Отмена"}</button>
+        <button type="submit" class="btn primary">Записать</button>
+      </div>
+    </form>`);
+  const f = $("#timeForm");
+  f.dataset.mode = mode;
+  f.dataset.issue = issueId;
+  f.addEventListener("submit", submitTime);
+  f.hours.addEventListener("input", () => {
+    const h = parseHM(f.hours.value);
+    $("#hmHint").textContent = f.hours.value.trim() ? (h ? hmHint(h) : "Не понял — введи как 0:24 или 1:24") : "например 0:24 или 1:24";
+  });
+  setTimeout(() => (mode === "timer" ? f.comments : f.hours).focus(), 60);
+}
+
+function hmHint(h) {
+  const mins = Math.round(h * 60), hh = Math.floor(mins / 60), mm = mins % 60;
+  const parts = [];
+  if (hh) parts.push(`${hh} ${plural(hh, "час", "часа", "часов")}`);
+  if (mm || !hh) parts.push(`${mm} ${plural(mm, "минута", "минуты", "минут")}`);
+  return "= " + parts.join(" ");
+}
+
+async function submitTime(ev) {
+  ev.preventDefault();
+  const f = ev.target;
+  const mode = f.dataset.mode, issueId = +f.dataset.issue;
+  const hours = parseHM(f.hours.value);
+  const res = $("#timeRes");
+  if (!(hours > 0 && hours <= 24)) {
+    res.className = "checkres err";
+    res.innerHTML = `${ic("alert", 17)}<span>${hours == null ? "Введи время как 0:24 или 1:24" : "Время должно быть больше 0:00 и не больше 24:00"}</span>`;
+    return;
+  }
+  const body = { hours, spent_on: f.spent_on.value, activity_id: f.activity_id.value ? +f.activity_id.value : null, comments: f.comments.value.trim() };
+  const btn = f.querySelector('[type="submit"]');
+  btn.disabled = true;
+  try {
+    if (mode === "timer") { await api("/api/timer/stop", { log: true, ...body }); setTimer(null); }
+    else await api("/api/time", { issue_id: issueId, ...body });
+    if (body.activity_id) store.set("activity", body.activity_id);
+    closeModal(true);
+    toast(`Записано ${fmtH(hours)} в задачу #${issueId}`, "ok");
+    if (S.openId === issueId) openIssue(issueId, true);
+  } catch (e) {
+    res.className = "checkres err";
+    res.innerHTML = `${ic("alert", 17)}<span>${esc(e.message)}</span>`;
+    btn.disabled = false;
+  }
+}
+
+async function timerDiscard(btn) {
+  if (!btn.dataset.sure) {
+    btn.dataset.sure = "1";
+    btn.textContent = "Точно сбросить? Время не запишется";
+    return;
+  }
+  try {
+    await api("/api/timer/stop", { log: false });
+    setTimer(null);
+    closeModal(true);
+    toast("Таймер сброшен", "");
+  } catch (e) { toast(e.message, "err"); }
+}
+
+/* ---------------------------------------------------------------- модальные окна */
+function showModal(html, locked) {
+  $("#modal").classList.remove("wide");
+  $("#modal").innerHTML = html;
+  document.body.classList.add("modal-on");
+  document.body.dataset.modalLocked = locked ? "1" : "";
+}
+
+function closeModal(force) {
+  if (!force && document.body.dataset.modalLocked === "1") return;
+  document.body.dataset.modalLocked = "";
+  document.body.classList.remove("modal-on");
+}
+
+/* ---------------------------------------------------------------- настройки */
+function openSettings(focusTeam) {
+  const c = S.cfg || {};
+  const first = !c.configured;
+  S.teamDraft = (c.team || []).map(m => ({ ...m }));
+  showModal(`
+    <div class="modal-head">
+      <div class="logo">${ic("calcheck", 22)}</div>
+      <div><h3>${first ? "Подключим Redmine" : "Настройки"}</h3><p>${first ? "Нужно один раз — дальше задачи подтягиваются сами" : "Подключение, команда и поведение программы"}</p></div>
+      ${first ? "" : `<button class="btn ghost sm icon" data-act="close-modal" title="Закрыть">${ic("x", 18)}</button>`}
+    </div>
+    ${DEMO ? `<div class="note">Демо-режим: изменения живут до закрытия окна, настоящий Redmine не трогается.</div>` : ""}
+    <form id="setForm" autocomplete="off">
+      <label class="field"><span>Адрес Redmine</span>
+        <input class="input" name="url" value="${esc(c.url || "")}" placeholder="https://redmine.company.ru" spellcheck="false"></label>
+      <label class="field"><span>API-ключ</span>
+        <div class="pw"><input class="input mono" name="api_key" type="password" spellcheck="false"
+          placeholder="${c.has_key ? "сохранён — оставь пустым, чтобы не менять" : "ключ из профиля Redmine"}">
+          <button type="button" data-act="eye" title="Показать">${ic("eye", 17)}</button></div>
+        <small>Redmine → «Моя учётная запись» → справа «Ключ доступа к API» → «Показать». Ключ хранится только на этом компьютере.</small></label>
+      <div class="grid2">
+        <label class="field"><span>Обновлять каждые, мин</span><input class="input" name="refresh_min" type="number" min="1" max="240" value="${c.refresh_min || 15}"></label>
+        <label class="field"><span>Рабочий день, ч</span><input class="input" name="workday_hours" type="number" min="1" max="24" step="0.5" value="${c.workday_hours || 8}"></label>
+      </div>
+      <label class="switch"><input type="checkbox" name="verify_ssl" ${c.verify_ssl !== false ? "checked" : ""}><span class="sw"></span>Проверять SSL-сертификат</label>
+      <label class="switch"><input type="checkbox" name="autostart" ${c.autostart ? "checked" : ""}><span class="sw"></span>Запускать вместе с Windows</label>
+      <div class="sect" id="teamSect">
+        <div class="sect-h">Команда</div>
+        <p class="sect-p">${first ? "Подчинённых можно будет добавить после подключения." : "Чьи задачи показывать в переключателе «Чьи задачи»."}</p>
+        ${first ? "" : `<div class="team-list" id="teamList"></div>
+        <div class="team-add"><input class="input" id="teamQ" placeholder="Фамилия или ссылка на профиль: …/users/123" autocomplete="off" spellcheck="false">
+          <button type="button" class="btn" data-act="team-add-link">${ic("plus", 15)}Добавить</button></div>
+        <div class="sugg" id="sugg"><span class="sugg-h">Загружаю подсказки…</span></div>`}
+      </div>
+      ${first ? "" : remoteSectionHTML(c)}
+      <div class="checkres" id="checkRes"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-act="check">${ic("plug", 16)}Проверить связь</button>
+        <span class="grow"></span>
+        ${first ? "" : `<button type="button" class="btn ghost" data-act="close-modal">Отмена</button>`}
+        <button type="submit" class="btn primary">Сохранить</button>
+      </div>
+    </form>`, first);
+  $("#setForm").addEventListener("submit", saveSettings);
+  $("#teamQ")?.addEventListener("input", renderCandidates);
+  $("#teamQ")?.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); teamAddLink(); } });
+  if (!first) {
+    renderTeamDraft();
+    loadCandidates();
+    S.teamDraft.filter(m => !m.project).forEach(m => { m._detecting = true; detectHome(m); });
+  }
+  setTimeout(() => {
+    if (focusTeam) $("#teamSect").scrollIntoView({ block: "center" });
+    else $(first ? '[name="url"]' : '[name="api_key"]', $("#modal"))?.focus();
+  }, 60);
+}
+
+let candidates = null;
+
+let candidatesLoading = null;
+
+async function loadCandidates(silent) {
+  if (!candidates) {
+    candidatesLoading ||= api("/api/team/candidates")
+      .then(r => { candidates = r.people; })
+      .catch(e => { if (!silent) toast(`Подсказки не загрузились: ${e.message}`, "err"); })
+      .finally(() => { candidatesLoading = null; });
+    await candidatesLoading;
+  }
+  renderCandidates();
+}
+
+const looksLikeLink = q => /^\d+$/.test(q) || /users\/\d+/.test(q);
+
+function freeCandidates(q) {
+  const free = (candidates || []).filter(p => !S.teamDraft.some(m => m.id === p.id));
+  return q ? free.filter(p => p.name.toLowerCase().includes(q)) : free.filter(p => p.count > 0);
+}
+
+function renderCandidates() {
+  const box = $("#sugg");
+  if (!box || !candidates) return;
+  const q = ($("#teamQ")?.value || "").trim().toLowerCase();
+  if (looksLikeLink(q)) { box.innerHTML = `<span class="sugg-h">Нажми «Добавить» или Enter — найду по ссылке</span>`; return; }
+  const list = freeCandidates(q).slice(0, 10);
+  box.innerHTML = list.length
+    ? `<span class="sugg-h">${q ? "Нашлись:" : "Часто работаешь с:"}</span>` + list.map(p =>
+      `<button type="button" data-act="team-add-id" data-uid="${p.id}">${avatar(p.name, "sm")}${esc(p.name)}</button>`).join("")
+    : `<span class="sugg-h">${q ? "Никого не нашёл — вставь ссылку на профиль" : "Начни вводить фамилию"}</span>`;
+}
+
+function renderTeamDraft() {
+  const el = $("#teamList");
+  if (!el) return;
+  el.innerHTML = S.teamDraft.map(m => `<div class="trow">${avatar(m.name, "sm")}<span class="tname">${esc(m.name)}</span>
+    <span class="tproj" title="Личный проект: сюда переезжают задачи, назначенные на сотрудника">${m.project ? `→ ${esc(m.project.name)}` : m._detecting ? "ищу личный проект…" : "личный проект не найден"}</span>
+    <button type="button" data-act="team-del" data-uid="${m.id}" title="Убрать">${ic("x", 13)}</button></div>`).join("");
+  renderCandidates();
+}
+
+function teamAdd(person) {
+  if (!person || S.teamDraft.some(m => m.id === person.id)) return;
+  const m = { id: person.id, name: person.name, _detecting: true };
+  S.teamDraft.push(m);
+  renderTeamDraft();
+  detectHome(m);
+}
+
+async function detectHome(m) {
+  try { m.project = (await api(`/api/team/home?id=${m.id}&name=${encodeURIComponent(m.name)}`)).project || undefined; }
+  catch { /* не нашли — не страшно */ }
+  m._detecting = false;
+  renderTeamDraft();
+}
+
+async function teamAddLink() {
+  const inp = $("#teamQ");
+  const q = inp.value.trim();
+  if (!q) return;
+  if (!looksLikeLink(q)) {
+    const p = freeCandidates(q.toLowerCase())[0];
+    if (!p) return toast("Никого не нашёл — вставь ссылку на профиль", "err");
+    teamAdd(p);
+  } else {
+    try { teamAdd(await api(`/api/user?q=${encodeURIComponent(q)}`)); }
+    catch (e) { return toast(e.message, "err"); }
+  }
+  inp.value = "";
+  renderCandidates();
+}
+
+function formData() {
+  const f = $("#setForm");
+  return {
+    url: f.url.value.trim(),
+    api_key: f.api_key.value.trim(),
+    refresh_min: +f.refresh_min.value || 15,
+    workday_hours: +f.workday_hours.value || 8,
+    verify_ssl: f.verify_ssl.checked,
+    autostart: f.autostart.checked,
+    ...(f.remote_enabled ? { remote_enabled: f.remote_enabled.checked, remote_port: +f.remote_port.value || 47824 } : {}),
+  };
+}
+
+function deviceName(ua) {
+  const os = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "Mac" : "Устройство";
+  const br = /YaBrowser/.test(ua) ? "Яндекс Браузер" : /EdgA?\//.test(ua) ? "Edge" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /FxiOS|Firefox/.test(ua) ? "Firefox" : /Safari/.test(ua) ? "Safari" : "";
+  return br ? `${os} · ${br}` : os;
+}
+
+function sessionsHTML(c) {
+  const list = c.sessions || [];
+  if (!list.length) return `<p class="sect-p">Вошедших телефонов пока нет.</p>`;
+  const when = t => t ? new Date(t * 1000).toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
+  return list.map(x => `<div class="sess">${ic("users", 16)}<div class="sess-b"><b>${esc(deviceName(x.ua))}</b>
+      <small>вход ${when(x.created)} · был ${when(x.last)}${x.ip ? ` · ${esc(x.ip)}` : ""}</small></div>
+      <button type="button" class="btn ghost sm danger-text" data-act="sess-revoke" data-sid="${x.id}">Отключить</button></div>`).join("")
+    + (list.length > 1 ? `<button type="button" class="link" data-act="sess-revoke-all">Отключить все телефоны</button>` : "");
+}
+
+function remoteSectionHTML(c) {
+  let status;
+  if (c.remote_error) status = `<div class="remote-urls err">${esc(c.remote_error)}</div>`;
+  else if (c.remote_running) status = `<div class="remote-urls">Работает. На телефоне открой:<br>${(c.lan_urls || []).map(u => `<code>${esc(u)}</code>`).join("<br>") || "адрес этого компьютера"}<br><small>Нужна общая сеть (Wi-Fi, VPN или Tailscale). Пока доступ включён, программа работает в фоне и после закрытия окна.</small></div>`;
+  else status = `<div class="remote-urls off">Выключено. Телефон не сможет подключиться.</div>`;
+  return `<div class="sect" id="remoteSect">
+    <div class="sect-h">Доступ с телефона</div>
+    <p class="sect-p">Телефон открывает программу по адресу этого компьютера и входит по PIN. С телефона нельзя поменять адрес Redmine, API-ключ и PIN.</p>
+    <label class="switch"><input type="checkbox" name="remote_enabled" ${c.remote_enabled ? "checked" : ""}><span class="sw"></span>Разрешить вход с телефона</label>
+    <div class="grid2">
+      <label class="field"><span>PIN или пароль</span><div class="pw"><input class="input mono" id="pinInput" type="password" autocomplete="new-password"
+        placeholder="${c.has_pin ? "задан — введи новый, чтобы сменить" : "минимум 6 символов"}"><button type="button" data-act="eye" title="Показать">${ic("eye", 17)}</button></div>
+        <small>${c.has_pin ? "Новый PIN отключит все вошедшие телефоны." : "Без PIN доступ не включится."}</small></label>
+      <label class="field"><span>Порт</span><input class="input" name="remote_port" type="number" min="1024" max="65535" value="${c.remote_port || 47824}"></label>
+    </div>
+    ${status}
+    <div class="sect-h" style="margin-top:12px">Вошедшие телефоны</div>
+    <div id="sessList">${sessionsHTML(c)}</div>
+  </div>`;
+}
+
+async function revokeSession(sid) {
+  try {
+    const r = await api("/api/sessions/revoke", sid ? { id: sid } : { all: true });
+    S.cfg = r.state;
+    const box = $("#sessList");
+    if (box) box.innerHTML = sessionsHTML(S.cfg);
+    toast(sid ? "Телефон отключён" : "Все телефоны отключены", "ok");
+  } catch (e) { toast(e.message, "err"); }
+}
+
+function openRemoteSettings() {
+  const themeT = S.theme === "light" ? "светлая" : S.theme === "dark" ? "тёмная" : "как в системе";
+  showModal(`<div class="modal-head"><div class="logo">${ic("calcheck", 22)}</div>
+      <div><h3>Ещё</h3><p>${esc(myName())}${S.fetchedAt ? ` · обновлено ${ago(S.fetchedAt)}` : ""}</p></div>
+      <button class="btn ghost sm icon" data-act="close-modal" title="Закрыть">${ic("x", 18)}</button></div>
+    <div class="modal-actions" style="margin-top:0;flex-direction:column;align-items:stretch">
+      <button class="btn" data-act="refresh">${ic("refresh", 16)}Обновить задачи</button>
+      <button class="btn" data-act="theme">${ic("sun", 16)}Тема: ${themeT}</button>
+      <button class="btn danger-text" data-act="logout">Выйти на этом телефоне</button>
+    </div>
+    <p class="sect-p" style="margin-top:14px">Адрес Redmine, API-ключ, команда и PIN настраиваются на компьютере.</p>`);
+}
+
+async function logout() {
+  try { await api("/api/logout", {}); } catch { /* всё равно на вход */ }
+  location.reload();
+}
+
+function setCheck(cls, html) {
+  const el = $("#checkRes");
+  el.className = "checkres " + cls;
+  el.innerHTML = html;
+}
+
+async function checkConn() {
+  const f = formData();
+  if (!f.url) return setCheck("err", `${ic("alert", 17)}<span>Укажи адрес Redmine</span>`);
+  setCheck("wait", `<span class="spin">${ic("refresh", 16)}</span><span>Проверяю связь…</span>`);
+  try {
+    const r = await api("/api/check", { url: f.url, api_key: f.api_key, verify_ssl: f.verify_ssl });
+    if (r.ok) setCheck("ok", `${ic("check", 17, 2.5)}<span>Связь есть: <b>${esc(r.user)}</b>, открытых задач на тебе — ${r.total}</span>`);
+    else setCheck("err", `${ic("alert", 17)}<span>${esc(r.error)}</span>`);
+  } catch (e) {
+    setCheck("err", `${ic("alert", 17)}<span>${esc(e.message)}</span>`);
+  }
+}
+
+async function saveSettings(ev) {
+  ev.preventDefault();
+  const f = formData();
+  if (!f.url && !DEMO) return setCheck("err", `${ic("alert", 17)}<span>Укажи адрес Redmine</span>`);
+  if (!f.api_key && !S.cfg?.has_key && !DEMO) return setCheck("err", `${ic("alert", 17)}<span>Вставь API-ключ</span>`);
+  const first = !S.cfg?.configured;
+  const pin = $("#pinInput")?.value.trim();
+  if (pin && pin.length < 6) return setCheck("err", `${ic("alert", 17)}<span>PIN — минимум 6 символов</span>`);
+  if (f.remote_enabled && !pin && !S.cfg?.has_pin) return setCheck("err", `${ic("alert", 17)}<span>Задай PIN для входа с телефона</span>`);
+  try {
+    if (pin) await api("/api/pin", { pin });
+    const r = await api("/api/config", first ? f : { ...f, team: S.teamDraft });
+    S.cfg = r.state;
+    closeModal(true);
+    toast(r.warning || "Настройки сохранены", r.warning ? "err" : "ok");
+    S.fetchedAt = null;
+    S.error = null;
+    render();
+    load(false);
+  } catch (e) {
+    setCheck("err", `${ic("alert", 17)}<span>${esc(e.message)}</span>`);
+  }
+}
+
+/* ---------------------------------------------------------------- misc */
+function toast(text, kind = "", action) {
+  const el = document.createElement("div");
+  el.className = "toast " + kind;
+  el.innerHTML = `<span class="ti">${ic(kind === "err" ? "alert" : "check", 13, 2.6)}</span><span>${esc(text)}</span>${action ? `<button class="toast-btn">${esc(action.label)}</button>` : ""}`;
+  if (action) el.querySelector(".toast-btn").addEventListener("click", () => { el.remove(); action.fn(); });
+  $("#toasts").appendChild(el);
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 300); }, action ? 8000 : kind === "err" ? 6000 : 2800);
+}
+
+function applyTheme() {
+  const r = document.documentElement;
+  if (S.theme === "auto") delete r.dataset.theme;
+  else r.dataset.theme = S.theme;
+}
+
+function setView(v) {
+  S.view = v;
+  store.set("view", v);
+  render();
+  $("#view").scrollTop = 0;
+}
+
+function shift(dir) {
+  if (S.view === "week") S.weekStart = addDays(S.weekStart, 7 * dir);
+  else if (S.view === "month") S.month = new Date(S.month.getFullYear(), S.month.getMonth() + dir, 1);
+  renderView();
+}
+
+async function openInRedmine(id) {
+  if (!S.cfg?.url) return toast(DEMO ? `Демо-режим: здесь откроется задача #${id} в браузере` : "Не указан адрес Redmine", DEMO ? "" : "err");
+  if (REMOTE) return void window.open(`${S.cfg.url}/issues/${id}`, "_blank", "noopener");
+  try { await api("/api/open", { id }); } catch (e) { toast(e.message, "err"); }
+}
+
+async function copyLink(id) {
+  const url = S.cfg?.url ? `${S.cfg.url}/issues/${id}` : `#${id}`;
+  try { await navigator.clipboard.writeText(url); toast("Ссылка скопирована", "ok"); }
+  catch { toast("Не удалось скопировать", "err"); }
+}
+
+/* ---------------------------------------------------------------- текст из Redmine (Textile) → HTML */
+const attUrl = a => `/api/attachment?id=${a.id}&name=${encodeURIComponent(a.filename)}&t=${encodeURIComponent(TOKEN)}`;
+const URL_RE = String.raw`(?:https?|ftp):\/\/[^\s<>"]*[^\s<>".,;:!?)\]'»]`;
+
+function inlineTextile(raw, ctx) {
+  const slots = [];
+  const put = html => `\u0000${slots.push(html) - 1}\u0000`;
+  const link = (href, text) => `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  let s = String(raw);
+  // @код@ — первым, чтобы внутри ничего не разбиралось
+  s = s.replace(/(^|[\s(>«"'])@([^\s@][^\n]*?)@(?=$|[\s.,;:!?)<»"'])/g, (m, pre, code) => pre + put(`<code>${esc(code)}</code>`));
+  // !картинка.png! и !https://…!
+  s = s.replace(/!([<>=]?)([^!\s]+?\.(?:png|jpe?g|gif|webp|bmp)|https?:\/\/[^!\s]+)(?:\(([^)]*)\))?!(?::(\S+))?/gi, (m, al, src, alt) => {
+    const att = ctx.atts.get(src);
+    if (att) return put(`<a href="${attUrl(att)}" target="_blank" rel="noopener"><img src="${attUrl(att)}" alt="${esc(alt || src)}" loading="lazy"></a>`);
+    if (/^https?:/i.test(src)) return put(link(src, `🖼 ${esc(alt || "картинка")}`));
+    return put(`<span class="muted">[картинка ${esc(src)}]</span>`);
+  });
+  // "текст":ссылка и [текст](ссылка)
+  s = s.replace(new RegExp(String.raw`"([^"\n]+)":(${URL_RE})`, "g"), (m, text, href) => put(link(href, esc(text))));
+  s = s.replace(new RegExp(String.raw`\[([^\]\n]+)\]\((${URL_RE})\)`, "g"), (m, text, href) => put(link(href, esc(text))));
+  // голые ссылки
+  s = s.replace(new RegExp(URL_RE, "g"), href => put(link(href, esc(href))));
+  // #12345 — ссылка на задачу, откроется здесь же
+  s = s.replace(/(^|[^\w&\/#])#(\d{3,})\b/g, (m, pre, id) => pre + put(`<a class="iref" data-sub="${id}" title="Открыть задачу #${id}">#${id}</a>`));
+  s = esc(s)
+    .replace(/\*\*(?=\S)([^*\n]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[\s(\[«>—–\u0000-])\*(?=\S)([^*]+?)\*(?=$|[\s.,;:!?)\]»<—–\u0000-])/g, "$1<strong>$2</strong>")
+    .replace(/(^|[\s(\[«>\u0000])_(?=[^\s_])([^_\n]+?)_(?=$|[\s.,;:!?)\]»<\u0000])/g, "$1<em>$2</em>");
+  return s.replace(/\u0000(\d+)\u0000/g, (m, n) => slots[+n]);
+}
+
+function textileList(items, ctx) {
+  let html = "";
+  const stack = [];
+  for (const it of items) {
+    const depth = it.marks.length, type = it.marks.endsWith("#") ? "ol" : "ul";
+    while (stack.length > depth) html += `</li></${stack.pop()}>`;
+    if (stack.length === depth) html += "</li>";
+    while (stack.length < depth) { html += `<${type}>`; stack.push(type); }
+    html += `<li>${inlineTextile(it.text, ctx)}`;
+  }
+  while (stack.length) html += `</li></${stack.pop()}>`;
+  return html;
+}
+
+function textileLines(text, ctx) {
+  let html = "", para = [], list = [];
+  const flushPara = () => { if (para.length) html += `<p>${inlineTextile(para.join("\n"), ctx).replace(/\n/g, "<br>")}</p>`; para = []; };
+  const flushList = () => { if (list.length) html += textileList(list, ctx); list = []; };
+  for (const line of text.split("\n")) {
+    let m;
+    if ((m = line.match(/^\s*([#*]+)(?:\s+(.*)|\s*$)/)) && !(m[1] === "*" && m[2] === undefined)) { flushPara(); list.push({ marks: m[1], text: m[2] || "" }); }
+    else if (/^\s*-{3,}\s*$/.test(line)) { flushPara(); flushList(); html += "<hr>"; }
+    else if ((m = line.match(/^h([1-6])(?:\([^)]*\))?\.\s+(.*)$/))) {
+      flushPara(); flushList();
+      const n = Math.min(6, +m[1] + 1);
+      html += `<h${n}>${inlineTextile(m[2], ctx)}</h${n}>`;
+    } else { flushList(); para.push(line); }
+  }
+  flushPara();
+  flushList();
+  return html;
+}
+
+function textileBlock(b, ctx) {
+  const t = b.replace(/^\n+|\s+$/g, "");
+  if (!t.trim()) return "";
+  let m;
+  if ((m = t.match(/^bq\.\s+([\s\S]*)$/))) return `<blockquote>${textileLines(m[1], ctx)}</blockquote>`;
+  const rows = t.split("\n");
+  if (rows.every(l => /^\s*\|.*\|\s*$/.test(l))) {
+    return `<div class="tbl"><table>${rows.map(l => `<tr>${l.trim().replace(/^\||\|$/g, "").split("|").map(c =>
+      /^_\.\s*/.test(c) ? `<th>${inlineTextile(c.replace(/^_\.\s*/, ""), ctx)}</th>` : `<td>${inlineTextile(c.trim(), ctx)}</td>`).join("")}</tr>`).join("")}</table></div>`;
+  }
+  return textileLines(t, ctx);
+}
+
+function textileBlocks(text, ctx) {
+  let html = "", last = 0, m;
+  // <pre> и {{collapse(...)}} — отдельно, collapse разбираем рекурсивно
+  const re = /<pre>(?:<code[^>]*>)?([\s\S]*?)(?:<\/code>)?<\/pre>|\{\{collapse(?:\(([^)]*)\))?[ \t]*\n?([\s\S]*?)\n?\}\}/g;
+  const plain = chunk => chunk.split(/\n{2,}/).map(b => textileBlock(b, ctx)).join("");
+  while ((m = re.exec(text))) {
+    html += plain(text.slice(last, m.index));
+    html += m[1] !== undefined ? `<pre>${esc(m[1])}</pre>`
+      : `<details class="clp"><summary>${esc(m[2] || "Подробнее")}</summary>${textileBlocks(m[3], ctx)}</details>`;
+    last = re.lastIndex;
+  }
+  return html + plain(text.slice(last));
+}
+
+function textile(src, attachments) {
+  const ctx = { atts: new Map((attachments || []).map(a => [a.filename, a])) };
+  return textileBlocks(String(src || "").replace(/\r\n?/g, "\n"), ctx);
+}
+
+const fmtSize = b => b > 1048576 ? `${(b / 1048576).toFixed(1).replace(".", ",")} МБ` : `${Math.max(1, Math.round(b / 1024))} КБ`;
+
+function filesHTML(det) {
+  const files = det.attachments || [];
+  if (!files.length) return "";
+  return `<div class="sec-h">Файлы · ${files.length}</div><div class="files">${files.map(a => {
+    const img = /^image\/(png|jpe?g|gif|webp)$/.test(a.type);
+    return `<a class="file" href="${attUrl(a)}" target="_blank" rel="noopener" title="${esc(a.description || a.filename)}">
+      ${img ? `<img src="${attUrl(a)}" alt="" loading="lazy">` : `<span class="fi">${ic("copy", 18)}</span>`}
+      <span>${esc(a.filename)}</span><small>${fmtSize(a.size)}</small></a>`;
+  }).join("")}</div>`;
+}
+
+/* ---------------------------------------------------------------- новая задача */
+const BUG_TEMPLATE = "Кратко: что не так.\n\n*Шаги воспроизведения:*\n# \n# \n# \n\n*ОР:* \n*ФР:* \n";
+let priorities = null;
+
+async function ensurePriorities() {
+  if (!priorities) {
+    try { priorities = (await api("/api/priorities")).priorities; } catch { priorities = []; }
+  }
+  return priorities;
+}
+
+function cfFieldHTML(x, v) {
+  const label = `<span>${esc(x.name)}${x.likely_required ? "<em>обязательно</em>" : ""}</span>`;
+  const attrs = `data-cf="${x.id}" data-multiple="${x.multiple ? 1 : ""}" data-req="${x.likely_required ? 1 : ""}"`;
+  if (!x.values?.length) return `<label class="fld">${label}<input class="input" ${attrs} value="${esc(v)}"></label>`;
+  const extra = v && !x.values.includes(v) ? `<option selected>${esc(v)}</option>` : "";
+  return `<label class="fld">${label}<select class="input" ${attrs}><option value="">— выбери —</option>${
+    x.values.map(o => `<option ${o === v ? "selected" : ""}>${esc(o)}</option>`).join("")}${extra}</select></label>`;
+}
+
+async function openCreate(opts = {}) {
+  const parent = opts.parent ? { ...(findIssue(opts.parent) || {}), ...(S.details[opts.parent] && !S.details[opts.parent]._error ? S.details[opts.parent] : {}) } : null;
+  const person = team().find(m => String(m.id) === String(S.who));
+  const last = store.get("lastProject", null);
+  const proj = parent?.project_id ? { id: parent.project_id, name: parent.project } : person?.project || last;
+  const assignee = parent ? parent.assignee?.id : person ? person.id : S.user?.id;
+  const prios = await ensurePriorities();
+  const prio = prios.find(p => p.default)?.id;
+  showModal(`
+    <div class="modal-head"><div class="logo">${ic("plus", 22)}</div>
+      <div><h3>${parent ? "Новая подзадача" : "Новая задача"}</h3><p>${parent ? `к #${parent.id} ${esc(parent.subject || "")}` : "Создастся в Redmine сразу после «Создать»"}</p></div>
+      <button class="btn ghost sm icon" data-act="close-modal" title="Закрыть">${ic("x", 18)}</button></div>
+    <form id="crForm" autocomplete="off">
+      <div class="fld wide"><span>Проект</span>
+        <div class="combo">
+          <input class="input" id="crProj" value="${esc(proj?.name || "")}" data-name="${esc(proj?.name || "")}" placeholder="Начни вводить название проекта" spellcheck="false">
+          <input type="hidden" name="project_id" value="${proj?.id || ""}">
+          <div class="combo-list" id="crProjList"></div>
+        </div></div>
+      <label class="field"><span>Тема</span><input class="input" name="subject" maxlength="255" required placeholder="Коротко, что нужно сделать"></label>
+      <div class="form-grid">
+        <label class="fld"><span>Трекер</span><select class="input" name="tracker_id"><option value="">— сначала проект —</option></select></label>
+        <label class="fld"><span>Приоритет</span><select class="input" name="priority_id">${prios.map(p => `<option value="${p.id}" ${p.id === prio ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></label>
+        <label class="fld"><span>Исполнитель</span><select class="input" name="assigned_to_id">${assigneeOptions([], assignee, assignee === S.user?.id ? myName() : "")}</select></label>
+        <label class="fld"><span>Срок</span><input class="input" type="date" name="due_date" value="${opts.due || ""}"></label>
+        <label class="fld"><span>Начало</span><input class="input" type="date" name="start_date" value="${ymd(today())}"></label>
+        <label class="fld"><span>Оценка, ч:мм</span><input class="input mono" name="estimated_hours" inputmode="numeric" placeholder="1:30"></label>
+      </div>
+      <div id="crCf"></div>
+      <div class="fld" style="margin-bottom:10px">
+        <div class="cr-desc-h">Описание<span class="tabs2"><button type="button" class="on" data-act="cr-tab" data-tab="edit">Текст</button><button type="button" data-act="cr-tab" data-tab="preview">Просмотр</button></span>
+          <button type="button" class="link" data-act="cr-template">Вставить шаблон бага</button></div>
+        <textarea class="input" name="description" rows="8" placeholder="*жирный*, &quot;ссылка&quot;:https://…, # пункт списка"></textarea>
+        <div class="desc rich" id="crPreview" hidden></div>
+      </div>
+      <label class="field"><span>Родительская задача</span><input class="input mono" name="parent_issue_id" value="${parent ? `#${parent.id}` : ""}" placeholder="#12345 — необязательно"></label>
+      <div class="checkres" id="crRes"></div>
+      <div class="modal-actions">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" data-act="close-modal">Отмена</button>
+        <button type="submit" class="btn primary">${ic("plus", 15)}Создать</button>
+      </div>
+    </form>`);
+  $("#modal").classList.add("wide");
+  const f = $("#crForm");
+  attachProjectPicker($("#crProj"), $("#crProjList"), () => f.project_id.value, (pid, name) => crSetProject(pid, name));
+  f.tracker_id.addEventListener("change", crRefreshFields);
+  f.addEventListener("submit", submitCreate);
+  if (proj?.id) crSetProject(proj.id, proj.name);
+  setTimeout(() => (proj?.id ? f.subject : $("#crProj")).focus(), 60);
+}
+
+async function crSetProject(pid, name) {
+  const f = $("#crForm");
+  if (!f) return;
+  f.project_id.value = pid;
+  $("#crProj").value = $("#crProj").dataset.name = name;
+  let opts;
+  try { opts = (S.projOpts[pid] ||= await api(`/api/project?id=${pid}`)); }
+  catch (e) { return crMessage("err", e.message); }
+  if ($("#crForm") !== f) return;
+  const curTr = f.tracker_id.value || store.get("lastTracker", "");
+  f.tracker_id.innerHTML = opts.trackers.map(t => `<option value="${t.id}" ${String(t.id) === String(curTr) ? "selected" : ""}>${esc(t.name)}</option>`).join("");
+  const curA = f.assigned_to_id.value;
+  f.assigned_to_id.innerHTML = assigneeOptions(opts.assignees, curA, optName(f.assigned_to_id));
+  crRefreshFields();
+}
+
+async function crRefreshFields(missing) {
+  const f = $("#crForm");
+  if (!f || !f.project_id.value || !f.tracker_id.value) return;
+  const key = `${f.project_id.value}:${f.tracker_id.value}`;
+  let fields = [];
+  try { fields = (S.fieldsCache[key] ||= (await api(`/api/fields?project=${f.project_id.value}&tracker=${f.tracker_id.value}`)).fields).filter(x => x.likely_required); }
+  catch { fields = []; }
+  if ($("#crForm") !== f) return;
+  for (const m of (Array.isArray(missing) ? missing : [])) if (!fields.some(x => x.id === m.id)) fields.push(m);
+  const typed = {};
+  $("#crCf").querySelectorAll("[data-cf]").forEach(el => { typed[el.dataset.cf] = el.value; });
+  $("#crCf").innerHTML = fields.length ? `<div class="cf-h">Поля проекта</div><div class="form-grid">${fields.map(x => cfFieldHTML(x, typed[x.id] || "")).join("")}</div>` : "";
+}
+
+function crMessage(cls, text) {
+  const el = $("#crRes");
+  if (!el) return;
+  el.className = "checkres " + cls;
+  el.innerHTML = text ? `${ic(cls === "err" ? "alert" : "check", 17)}<span>${esc(text)}</span>` : "";
+}
+
+async function submitCreate(ev) {
+  ev.preventDefault();
+  const f = ev.target;
+  if (!f.project_id.value) return crMessage("err", "Выбери проект");
+  if (!f.subject.value.trim()) return crMessage("err", "Напиши тему задачи");
+  const est = f.estimated_hours.value.trim();
+  if (est && parseHM(est) == null) return crMessage("err", "Оценку введи как 1:30 или 1,5");
+  const cfs = [];
+  let empty = [];
+  f.querySelectorAll("#crCf [data-cf]").forEach(el => {
+    const v = el.value.trim();
+    el.classList.toggle("need", !!el.dataset.req && !v);
+    if (v) cfs.push({ id: +el.dataset.cf, value: el.dataset.multiple ? [v] : v });
+    else if (el.dataset.req) empty.push(el.closest(".fld").querySelector("span").firstChild.textContent);
+  });
+  if (empty.length) return crMessage("err", `Заполни: ${empty.join(", ")}`);
+  const body = {
+    project_id: +f.project_id.value, tracker_id: +f.tracker_id.value, subject: f.subject.value.trim(),
+    description: f.description.value, priority_id: f.priority_id.value, assigned_to_id: f.assigned_to_id.value,
+    due_date: f.due_date.value, start_date: f.start_date.value, estimated_hours: est ? parseHM(est) : "",
+    parent_issue_id: f.parent_issue_id.value.trim(), custom_fields: cfs,
+  };
+  const btn = f.querySelector('[type="submit"]');
+  btn.disabled = true;
+  crMessage("wait", "Создаю…");
+  try {
+    const r = await api("/api/issue/create", body);
+    store.set("lastProject", { id: body.project_id, name: $("#crProj").dataset.name });
+    store.set("lastTracker", body.tracker_id);
+    closeModal(true);
+    toast(`Создана задача #${r.id}`, "ok", { label: "Открыть", fn: () => openIssue(r.id) });
+    const parentId = parseInt(String(body.parent_issue_id).replace("#", ""), 10);
+    if (parentId && S.openId === parentId) openIssue(parentId, true);
+    load(false);
+  } catch (e) {
+    btn.disabled = false;
+    const missing = e.data?.missing || [];
+    if (missing.length) {
+      await crRefreshFields(missing);
+      crMessage("err", `Redmine требует заполнить: ${missing.map(m => `«${m.name}»`).join(", ")}`);
+    } else crMessage("err", e.message);
+  }
+}
+
+/* ---------------------------------------------------------------- перетаскивание: перенос срока */
+let drag = null;
+let navHover = null;
+
+const addMonths = (d, n) => {
+  const x = new Date(d.getFullYear(), d.getMonth() + n, 1);
+  x.setDate(Math.min(d.getDate(), new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate()));
+  return x;
+};
+const shortDay = d => `${WDS[wd(d)]}, ${d.getDate()} ${MON_S[d.getMonth()]}`;
+
+function dockTargets(i) {
+  const t = S.today;
+  const base = i._due && i._due > t ? i._due : t;
+  const raw = [["Сегодня", t], ["Завтра", addDays(t, 1)], ["+1 день", addDays(base, 1)], ["+1 неделя", addDays(base, 7)], ["+1 месяц", addMonths(base, 1)]];
+  const seen = new Set(), out = [];
+  for (const [label, d] of raw) {
+    const k = ymd(d);
+    if (seen.has(k) || same(d, i._due)) continue;
+    seen.add(k);
+    out.push({ label, date: k, d });
+  }
+  if (i._due) out.push({ label: "Без срока", date: "", d: null });
+  return out;
+}
+
+function renderDock(i) {
+  $("#dock").innerHTML = `<span class="dock-l">Перенести<br>#${i.id} на</span>` + dockTargets(i).map(x =>
+    `<div class="dz" data-drop="${x.date}"><b>${x.label}</b><small>${x.d ? shortDay(x.d) : "убрать срок"}</small></div>`).join("");
+}
+
+function dragCleanup() {
+  drag = null;
+  clearTimeout(navHover?.timer);
+  navHover = null;
+  document.body.classList.remove("dragging");
+  document.querySelectorAll(".drag-src, .drop-hover").forEach(el => el.classList.remove("drag-src", "drop-hover"));
+}
+
+document.addEventListener("dragstart", e => {
+  const el = e.target.closest?.("[data-id][draggable]");
+  const i = el && findIssue(+el.dataset.id);
+  if (!i) return;
+  drag = { id: i.id };
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", `#${i.id}`);
+  renderDock(i);
+  requestAnimationFrame(() => { el.classList.add("drag-src"); document.body.classList.add("dragging"); });
+});
+
+document.addEventListener("dragover", e => {
+  if (!drag) return;
+  // держишь задачу над стрелками — неделя/месяц листаются сами
+  const nav = e.target.closest('[data-act="prev"], [data-act="next"]');
+  if (nav) {
+    e.preventDefault();
+    const act = nav.dataset.act;
+    if (navHover?.act !== act) {
+      clearTimeout(navHover?.timer);
+      navHover = { act, timer: setTimeout(() => { shift(act === "next" ? 1 : -1); navHover = null; }, 700) };
+    }
+    return;
+  }
+  if (navHover) { clearTimeout(navHover.timer); navHover = null; }
+  const zone = e.target.closest("[data-drop]");
+  document.querySelectorAll(".drop-hover").forEach(el => { if (el !== zone) el.classList.remove("drop-hover"); });
+  if (!zone) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  zone.classList.add("drop-hover");
+});
+
+document.addEventListener("drop", e => {
+  if (!drag) return;
+  const zone = e.target.closest("[data-drop]");
+  const id = drag.id;
+  dragCleanup();
+  if (!zone) return;
+  e.preventDefault();
+  const i = findIssue(id);
+  if (i) moveDue(i, zone.dataset.drop);
+});
+document.addEventListener("dragend", dragCleanup);
+// если карточка пропала из DOM (страница перелистнулась), dragend не приходит — подчищаем по первому движению мыши
+document.addEventListener("mousemove", e => { if (drag && !e.buttons) dragCleanup(); });
+
+function patchLocal(id, fields) {
+  for (const list of [S.mine, S.team]) {
+    const i = list.find(x => x.id === id);
+    if (i) { Object.assign(i, fields); i._due = parseD(i.due); }
+  }
+}
+
+async function moveDue(i, date) {
+  const old = { due: i.due || null, start: i.start || null };
+  if ((date || null) === old.due) return;
+  const body = { id: i.id, due_date: date || "" };
+  if (date && i.start && i.start > date) body.start_date = date;  // Redmine не даст срок раньше даты начала
+  patchLocal(i.id, { due: date || null, start: body.start_date ?? old.start });
+  render();
+  try {
+    await api("/api/issue/update", body);
+    delete S.details[i.id];
+    if (S.openId === i.id) openIssue(i.id, true);
+    const what = date ? `срок перенесён на ${shortDay(parseD(date))}` : "срок убран";
+    toast(`#${i.id}: ${what}${body.start_date ? ", дата начала тоже сдвинута" : ""}`, "ok",
+      { label: "Отменить", fn: () => undoMove(i.id, old, !!body.start_date) });
+  } catch (e) {
+    patchLocal(i.id, old);
+    render();
+    toast(e.message, "err");
+  }
+}
+
+async function undoMove(id, old, startChanged) {
+  const cur = findIssue(id);
+  const now = cur ? { due: cur.due, start: cur.start } : null;
+  const body = { id, due_date: old.due || "" };
+  if (startChanged) body.start_date = old.start || "";
+  patchLocal(id, old);
+  render();
+  try {
+    await api("/api/issue/update", body);
+    delete S.details[id];
+    if (S.openId === id) openIssue(id, true);
+    toast(`#${id}: перенос отменён`, "ok");
+  } catch (e) {
+    if (now) patchLocal(id, now);
+    render();
+    toast(e.message, "err");
+  }
+}
+
+/* ---------------------------------------------------------------- events */
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-act]");
+  const issue = e.target.closest("[data-id]");
+  if (issue && !(a && issue.contains(a))) return openIssue(+issue.dataset.id);
+
+  const tog = e.target.closest("[data-toggle]");
+  if (tog) {
+    const k = tog.dataset.toggle;
+    S.collapsed[k] = !S.collapsed[k];
+    store.set("collapsed", S.collapsed);
+    tog.parentElement.classList.toggle("closed", !!S.collapsed[k]);
+    return;
+  }
+
+  const who = e.target.closest("[data-who]");
+  if (who) {
+    if (document.body.classList.contains("modal-on")) closeModal(true);
+    return setWho(who.dataset.who);
+  }
+
+  const view = e.target.closest("[data-view]");
+  if (view) return setView(view.dataset.view);
+
+  const sub = e.target.closest("[data-sub]");
+  if (sub) return openIssue(+sub.dataset.sub, false, "child");
+
+  const day = e.target.closest("[data-day]");
+  if (day) {
+    S.selDay = parseD(day.dataset.day);
+    if (S.selDay.getMonth() !== S.month.getMonth()) S.month = new Date(S.selDay.getFullYear(), S.selDay.getMonth(), 1);
+    return renderView();
+  }
+
+  if (!a) return;
+  switch (a.dataset.act) {
+    case "refresh": return load(true);
+    case "settings": return REMOTE ? openRemoteSettings() : openSettings(false);
+    case "who-sheet": return openWhoSheet();
+    case "row-timer": return timerStart(+a.dataset.issue);
+    case "row-later": {
+      const i = findIssue(+a.dataset.issue);
+      return i ? moveDue(i, ymd(laterDate(i, S.today))) : undefined;
+    }
+    case "ihint-off":
+      store.set("installHintOff", true);
+      return void ($("#ihint").innerHTML = "");
+    case "new-issue": return openCreate();
+    case "new-sub": return openCreate({ parent: +a.dataset.issue });
+    case "cr-template": {
+      const ta = $("#crForm").description;
+      ta.value = ta.value.trim() ? `${ta.value.replace(/\s+$/, "")}\n\n${BUG_TEMPLATE}` : BUG_TEMPLATE;
+      ta.focus();
+      return;
+    }
+    case "cr-tab": {
+      const preview = a.dataset.tab === "preview";
+      document.querySelectorAll('[data-act="cr-tab"]').forEach(b => b.classList.toggle("on", b === a));
+      $("#crForm").description.hidden = preview;
+      const pv = $("#crPreview");
+      pv.hidden = !preview;
+      if (preview) pv.innerHTML = textile($("#crForm").description.value) || `<span class="muted">Пусто</span>`;
+      return;
+    }
+    case "due-quick": {
+      const i = { ...(findIssue(S.openId) || {}), ...(S.details[S.openId] && !S.details[S.openId]._error ? S.details[S.openId] : {}) };
+      i._due = parseD(i.due);
+      return moveDue(i, a.dataset.date);
+    }
+    case "logout": return logout();
+    case "sess-revoke": return revokeSession(a.dataset.sid);
+    case "sess-revoke-all": return revokeSession(null);
+    case "settings-team": return openSettings(true);
+    case "close-modal": return closeModal();
+    case "close-drawer": return closeDrawer();
+    case "drawer-back": {
+      const prev = S.drawerStack.pop();
+      return prev ? openIssue(prev, false, "back") : undefined;
+    }
+    case "subs-toggle": {
+      const box = $("#subs");
+      const hide = box.classList.toggle("hide-closed");
+      a.textContent = hide ? "Показать закрытые" : "Скрыть закрытые";
+      return;
+    }
+    case "check": return checkConn();
+    case "eye": { const inp = a.previousElementSibling; inp.type = inp.type === "password" ? "text" : "password"; return; }
+    case "open": return openInRedmine(+a.dataset.issue);
+    case "copy": return copyLink(+a.dataset.issue);
+    case "timer-start": return timerStart(+a.dataset.issue);
+    case "timer-stop": return openTimeModal("timer");
+    case "timer-discard": return timerDiscard(a);
+    case "log-time": return openTimeModal("manual", +a.dataset.issue);
+    case "ed-reset": return renderDrawer();
+    case "team-add-id": return teamAdd(candidates?.find(p => p.id === +a.dataset.uid));
+    case "team-add-link": return teamAddLink();
+    case "team-del":
+      S.teamDraft = S.teamDraft.filter(m => m.id !== +a.dataset.uid);
+      return renderTeamDraft();
+    case "prev": return shift(-1);
+    case "next": return shift(1);
+    case "now":
+      S.weekStart = mondayOf(S.today);
+      S.month = new Date(S.today.getFullYear(), S.today.getMonth(), 1);
+      S.selDay = S.today;
+      return renderView();
+    case "reset-filter":
+      S.q = ""; S.project = ""; $("#q").value = "";
+      return render();
+    case "theme":
+      S.theme = { auto: "light", light: "dark", dark: "auto" }[S.theme];
+      store.set("theme", S.theme);
+      applyTheme();
+      return renderSide();
+    case "goto": {
+      const key = a.dataset.target;
+      if (S.collapsed[key]) { S.collapsed[key] = false; store.set("collapsed", S.collapsed); }
+      if (S.view !== "plan") setView("plan");
+      const el = document.getElementById("g-" + key);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    case "goto-week":
+      S.weekStart = mondayOf(S.today);
+      return setView("week");
+  }
+});
+
+$("#q").addEventListener("input", e => { S.q = e.target.value; renderTop(); renderView(); });
+$("#proj").addEventListener("change", e => { S.project = e.target.value; renderTop(); renderView(); });
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (document.body.classList.contains("modal-on")) return closeModal();
+    if (S.openId) return closeDrawer();
+    if (document.activeElement === $("#q") && S.q) { S.q = ""; $("#q").value = ""; renderTop(); renderView(); }
+    return;
+  }
+  const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName);
+  if (e.key === "Enter" && document.activeElement?.dataset.id) return openIssue(+document.activeElement.dataset.id);
+  if (typing || e.ctrlKey || e.altKey || e.metaKey || document.body.classList.contains("modal-on")) return;
+  if (e.key === "/") { e.preventDefault(); $("#q").focus(); }
+  else if (e.key === "r" || e.key === "к") { e.preventDefault(); load(true); }
+  else if (e.key === "n" || e.key === "т") { e.preventDefault(); openCreate(); }
+  else if (e.key === "1") setView("plan");
+  else if (e.key === "2") setView("week");
+  else if (e.key === "3") setView("month");
+  else if (e.key === "ArrowLeft" && !S.openId) shift(-1);
+  else if (e.key === "ArrowRight" && !S.openId) shift(1);
+});
+
+// пульс для сервера: окно закрыли — программа завершается; заодно ловим обновление программы
+setInterval(async () => {
+  try {
+    const r = await api("/api/ping");
+    if (S.version == null) S.version = r.version;
+    else if (r.version !== S.version && !document.body.classList.contains("modal-on") && !isDirty()) location.reload();
+  } catch { /* сервер перезапускается */ }
+}, 5000);
+addEventListener("pagehide", () => {
+  if (!REMOTE) navigator.sendBeacon("/api/bye", new Blob([JSON.stringify({ token: TOKEN })], { type: "application/json" }));
+});
+mobileMQ.addEventListener("change", () => render());
+if (REMOTE && "serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+(function installHint() {
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if (!REMOTE || !ios || standalone || store.get("installHintOff", false)) return;
+  $("#ihint").innerHTML = `${ic("plus", 18)}<span>Сохрани как приложение: внизу Safari нажми <b>«Поделиться»</b> (квадрат со стрелкой) → <b>«На экран „Домой“»</b></span>
+    <button data-act="ihint-off" title="Скрыть" aria-label="Скрыть подсказку">${ic("x", 16)}</button>`;
+})();
+
+// каждую секунду — таймер, каждую минуту — смена суток и «обновлено N мин назад»
+setInterval(() => {
+  if (!S.timer) return;
+  const txt = fmtClock(elapsed());
+  document.querySelectorAll("[data-timer]").forEach(el => { el.textContent = txt; });
+  updateTitle();
+}, 1000);
+setInterval(() => {
+  const t = today();
+  if (+t !== +S.today) { S.today = t; render(); } else { renderSide(); }
+}, 60000);
+
+/* ---------------------------------------------------------------- start */
+(async function init() {
+  applyTheme();
+  $("#brandLogo").innerHTML = `<img src="/favicon.svg" alt="" width="36" height="36">`;
+  $("#searchIc").innerHTML = ic("search", 16);
+  $("#newBtn").innerHTML = `${ic("plus", 16)}<span class="lbl">Задача</span>`;
+  render();
+  try {
+    S.cfg = await api("/api/state");
+    S.version = S.cfg.version;
+    setTimer((await api("/api/timer")).timer);
+  } catch (e) {
+    S.cfg = { configured: true };
+    S.error = e.message;
+    return render();
+  }
+  render();
+  if (!S.cfg.configured) return openSettings(false);
+  load(false);
+})();
+</script>
+</body>
+</html>

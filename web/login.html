@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Вход · Redmine календарь</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#1f6feb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Redmine">
+<style>
+:root {
+  --bg: #f4f5f9; --surface: #fff; --border: #d7dae3; --text: #151826; --text-2: #535a6d; --text-3: #6b7285;
+  --accent: #1f6feb; --accent-soft: #e6f0ff; --red-soft: #fff0f0; --red-text: #c62a2f;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1016; --surface: #171a23; --border: #313646; --text: #e9ebf1; --text-2: #a3a9b9; --text-3: #8a91a4;
+    --accent: #58a6ff; --accent-soft: rgba(56, 139, 253, .16); --red-soft: rgba(242, 85, 90, .13); --red-text: #ff8a8e;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  display: grid; place-items: center; padding: 24px 16px;
+}
+.box {
+  width: min(360px, 100%); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 22px; padding: 28px 24px 24px; text-align: center;
+  box-shadow: 0 24px 60px -24px rgba(20, 24, 40, .35);
+}
+.logo { width: 64px; height: 64px; border-radius: 18px; margin: 0 auto 14px; display: block; }
+h1 { margin: 0 0 4px; font-size: 21px; letter-spacing: -.01em; }
+p { margin: 0 0 20px; color: var(--text-2); font-size: 14px; }
+input {
+  width: 100%; height: 52px; padding: 0 14px; border-radius: 14px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  font: 600 22px/1 "Cascadia Mono", Consolas, ui-monospace, monospace; letter-spacing: .3em; text-align: center;
+  outline: 0;
+}
+input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+button {
+  width: 100%; height: 50px; margin-top: 12px; border: 0; border-radius: 14px;
+  background: var(--accent); color: #fff; font: inherit; font-weight: 650; font-size: 16px; cursor: pointer;
+}
+button[disabled] { opacity: .6; }
+.err { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--red-soft); color: var(--red-text); font-size: 14px; }
+.err:empty { display: none; }
+small { display: block; margin-top: 16px; color: var(--text-3); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<form class="box" id="f" autocomplete="off">
+  <img class="logo" src="/icon-192.png" alt="">
+  <h1>Redmine календарь</h1>
+  <p>Введи PIN, который ты задал в настройках на компьютере</p>
+  <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••••" required autofocus>
+  <button id="go" type="submit">Войти</button>
+  <div class="err" id="err"></div>
+  <small>Телефон запомнится на 30 дней. Отключить его можно в настройках на компьютере.</small>
+</form>
+<script>
+"use strict";
+const f = document.getElementById("f"), pin = document.getElementById("pin"), err = document.getElementById("err"), go = document.getElementById("go");
+f.addEventListener("submit", async e => {
+  e.preventDefault();
+  err.textContent = "";
+  go.disabled = true;
+  go.textContent = "Проверяю…";
+  try {
+    const r = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: pin.value }) });
+    const data = await r.json().catch(() => ({}));
+    if (r.ok) return location.reload();
+    err.textContent = data.error || `Ошибка ${r.status}`;
+    pin.select();
+  } catch {
+    err.textContent = "Компьютер не отвечает — он включён и программа запущена?";
+  }
+  go.disabled = false;
+  go.textContent = "Войти";
+});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+</script>
+</body>
+</html>
